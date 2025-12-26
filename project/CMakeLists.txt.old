@@ -18,37 +18,16 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 option(DIRECTX_11_ENABLED "Enable DirectX 11 Support" ON)
 if(DIRECTX_11_ENABLED)
     if(LINUX)
-        include(ExternalProject)
-
-        ExternalProject_Add(dxvk-native
-        GIT_REPOSITORY https://github.com/doitsujin/dxvk.git
-        GIT_TAG v2.3
-        CONFIGURE_COMMAND meson setup <SOURCE_DIR>
-        BUILD_COMMAND ninja src/d3d11/libdxvk_d3d11.so src/dxgi/libdxvk_dxgi.so
-        INSTALL_COMMAND "")
-
-        ExternalProject_Get_property(dxvk-native SOURCE_DIR BINARY_DIR)
-        set(DXVK_SOURCE_DIR ${SOURCE_DIR})
-        set(DXVK_BINARY_DIR ${BINARY_DIR})
-        unset(SOURCE_DIR)
-        unset(BINARY_DIR)
-        add_dependencies(${PROJECT_NAME} dxvk-native)
-
-        include_directories(SYSTEM
-        ${DXVK_SOURCE_DIR}/include/native/directx
-        ${DXVK_SOURCE_DIR}/include/native/windows)
-        target_link_directories(${PROJECT_NAME} PRIVATE
-        ${DXVK_BINARY_DIR}/src/d3d11
-        ${DXVK_BINARY_DIR}/src/dxgi
-    )
+        include_directories(${CMAKE_SOURCE_DIR}/libs/dxvk)
+        find_library(DXGI_LIBRARY dxgi.pc)
+        find_library(D3D11_LIBRARY d3d11.pc)
 
         target_link_libraries(
-            ${PROJECT_NAME} PUBLIC
-            dxvk_d3d11
-            dxvk_dxgi
-            SDL2::SDL2
-            SDL2_image
+            ${PROJECT_NAME} PRIVATE
+            ${DXGI_LIBRARY}
+            ${D3D11_LIBRARY}
         )
+
     else()
         find_library(DXGI_LIBRARY dxgi.lib)
         find_library(D3D11_LIBRARY d3d11.lib)
@@ -138,4 +117,38 @@ else()
     )
         target_link_libraries(${PROJECT_NAME} PRIVATE FX)
     endif()
+endif()
+add_library(SDL_IMAGE STATIC IMPORTED)
+set_target_properties(SDL_IMAGE PROPERTIES
+    IMPORTED_LOCATION "${SDL_IMAGE_DIR}/lib/x64/SDL2_image.lib"
+    INTERFACE_INCLUDE_DIRECTORIES "${SDL_IMAGE_DIR}/include"
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL_IMAGE)
+
+file(GLOB_RECURSE DLL_FILES
+    "${SDL_IMAGE_DIR}/lib/x64/*.dll"
+    "${SDL_IMAGE_DIR}/lib/x64/*.manifest"
+)
+
+foreach(DLL ${DLL_FILES})
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${DLL}
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+endforeach(DLL)
+
+# DirectX Effects
+if(DIRECTX_11_ENABLED)
+    set(FX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/dx11effects")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        set(FX_LIBRARY "${FX_DIR}/lib/x64/dx11effects_d.lib")
+    else()
+        set(FX_LIBRARY "${FX_DIR}/lib/x64/dx11effects.lib")
+    endif()
+    add_library(FX STATIC IMPORTED)
+    set_target_properties(FX PROPERTIES
+        IMPORTED_LOCATION "${FX_LIBRARY}"
+        INTERFACE_INCLUDE_DIRECTORIES "${FX_DIR}/include"
+    )
+    target_link_libraries(${PROJECT_NAME} PRIVATE FX)
+endif()
 endif()
