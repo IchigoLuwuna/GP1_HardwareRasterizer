@@ -419,3 +419,4 @@ FodyWeavers.xsd
 
 # Compile commands
 compile_commands.json
+compile_commands/
