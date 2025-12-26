@@ -21,13 +21,8 @@ public:
 	Effect& operator=( Effect&& ) = default;
 
 private:
-#ifdef WIN32
 	ID3DX11Effect* m_pEffect{};
-#else
-	ID3D10Effect* m_pEffect{};
-#endif
-
-	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::string& assetFile );
+	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
 };
 
 #endif
