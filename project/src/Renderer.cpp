@@ -8,6 +8,8 @@
 
 // Project includes
 #include "Renderer.h"
+#include "Error.h"
+#include "Mesh.h"
 
 using namespace dae;
 
@@ -28,17 +30,43 @@ Renderer::Renderer( SDL_Window* pWindow )
 	{
 		std::cout << "DirectX initialization failed!\n";
 	}
+
+	error::utils::HandleThrowingFunction( [&]() { Mesh testMesh{ m_pDevice, { {}, {}, {} }, { 0, 1, 2 } }; } );
 }
 
 Renderer::~Renderer()
 {
-	m_pSwapChain->Release();
-	m_pRenderTargetView->Release();
-	m_pDepthStencilView->Release();
-	m_pDepthStencilBuffer->Release();
-	m_pDeviceContext->ClearState();
-	m_pDeviceContext->Flush();
-	m_pDeviceContext->Release();
+	if ( m_pRenderTargetView )
+	{
+		m_pRenderTargetView->Release();
+	}
+
+	if ( m_pRenderTargetBuffer )
+	{
+		m_pRenderTargetBuffer->Release();
+	}
+
+	if ( m_pDepthStencilView )
+	{
+		m_pDepthStencilView->Release();
+	}
+
+	if ( m_pDepthStencilBuffer )
+	{
+		m_pDepthStencilBuffer->Release();
+	}
+
+	if ( m_pSwapChain )
+	{
+		m_pSwapChain->Release();
+	}
+
+	if ( m_pDeviceContext )
+	{
+		m_pDeviceContext->ClearState();
+		m_pDeviceContext->Flush();
+		m_pDeviceContext->Release();
+	}
 
 	if ( m_pDevice )
 	{
@@ -63,18 +91,6 @@ void Renderer::Render() const
 	m_pDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0 );
 
 	// 2. Set pipeline
-	constexpr int elementCount{ 2 };
-	D3D11_INPUT_ELEMENT_DESC vertexDescription[elementCount]{};
-
-	vertexDescription[0].SemanticName = "POSITION";
-	vertexDescription[0].Format = DXGI_FORMAT_R32G32_FLOAT;
-	vertexDescription[0].AlignedByteOffset = 0;
-	vertexDescription[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-
-	vertexDescription[1].SemanticName = "COLOR";
-	vertexDescription[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	vertexDescription[1].AlignedByteOffset = 12;
-	vertexDescription[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	// 3. Present backbuffer
 	m_pSwapChain->Present( 0, 0 );
@@ -84,7 +100,7 @@ HRESULT Renderer::InitializeDirectX()
 {
 	// 1. Create device context
 	const D3D_FEATURE_LEVEL featureLevel{ D3D_FEATURE_LEVEL_11_1 };
-	const uint32_t createDeviceFlags{};
+	uint32_t createDeviceFlags{};
 
 #if defined( DEBUG ) || defined( _DEBUG )
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;

@@ -5,10 +5,10 @@ set(SOURCES
     "src/Matrix.cpp"
     "src/Renderer.cpp"
     "src/Timer.cpp"
-    "src/Vector2.cpp"
-    "src/Vector3.cpp"
-    "src/Vector4.cpp"
+    "src/Structs.cpp"
     "src/Effect.cpp"
+    "src/Mesh.cpp"
+    "src/ColorRGB.cpp"
 )
 
 # Create the executable

@@ -1,27 +1,27 @@
 // Input/Output
 struct VS_INPUT
 {
-	float3 Position : POSITION
-	float3 Color : COLOR
-}
+	float3 position : POSITION;
+	float3 color : COLOR;
+};
 
 struct VS_OUTPUT
 {
-	float4 Position : SV_POSITION
-	float3 Color : COLOR
-}
+	float4 position : SV_POSITION;
+	float3 color : COLOR;
+};
 
 // Vertex Shader
-VS_OUTPUT VS(VS_INPUT input)
+VS_OUTPUT VtxShader(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.Position = float4(input.position, 1.f);
-	output.Color = input.color;
+	output.position = float4(input.position, 1.f);
+	output.color = input.color;
 	return output;
 }
 
 // Pixel Shader
-float4 PS(VS_OUTPUT input) : SV_TARGET
+float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
 	return float4(input.color,1.f);
 }
@@ -31,8 +31,8 @@ technique11 DefaultTechnique
 {
 	pass P0
 	{
-		SetVertexShader( CompileShader( vs_5_0, VS() ) );
+		SetVertexShader( CompileShader( vs_5_0, VtxShader() ) );
 		SetGeometryShader( NULL );
-		SetPixelShader( CompileShader( ps_5_0, PS() ) );
+		SetPixelShader( CompileShader( ps_5_0, PxlShader() ) );
 	}
 }

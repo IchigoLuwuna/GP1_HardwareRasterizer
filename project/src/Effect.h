@@ -12,16 +12,25 @@
 class Effect
 {
 public:
-	Effect( ID3D11Device* pDevice, const std::string& assetFile );
+	Effect() = default;
+	Effect( ID3D11Device* pDevice, const std::wstring& assetFile );
+	Effect( const Effect& ) = delete;
+	Effect( Effect&& rhs );
+	Effect& operator=( const Effect& ) = delete;
+	Effect& operator=( Effect&& rhs );
+
 	~Effect();
 
-	Effect( const Effect& ) = delete;
-	Effect( Effect&& ) = default;
-	Effect& operator=( const Effect& ) = delete;
-	Effect& operator=( Effect&& ) = default;
+	ID3DX11Effect* operator->(); // Access effect
+
+	// Getters
+	ID3DX11EffectTechnique* GetTechniquePtr();
 
 private:
 	ID3DX11Effect* m_pEffect{};
+	ID3DX11EffectTechnique* m_pTechnique{};
+	ID3D11InputLayout* m_pInputLayout{};
+
 	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
 };
 
