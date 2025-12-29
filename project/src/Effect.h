@@ -24,10 +24,13 @@ public:
 	ID3DX11Effect* operator->(); // Access effect
 
 	// Getters
-	ID3DX11EffectTechnique* GetTechniquePtr();
+	ID3DX11EffectTechnique* GetTechniquePtr() const;
+	ID3D11InputLayout* GetInputLayoutPtr() const;
 
 private:
 	ID3DX11Effect* m_pEffect{};
+	ID3D11VertexShader* m_pVShader{};
+	ID3D11PixelShader* m_pPShader{};
 	ID3DX11EffectTechnique* m_pTechnique{};
 	ID3D11InputLayout* m_pInputLayout{};
 

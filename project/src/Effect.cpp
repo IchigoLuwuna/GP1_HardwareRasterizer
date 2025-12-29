@@ -43,9 +43,8 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	D3DX11_PASS_DESC passDesc{};
 	m_pTechnique->GetPassByIndex( 0 )->GetDesc( &passDesc );
 
-	const HRESULT result{ pDevice->CreateInputLayout(
+	HRESULT result{ pDevice->CreateInputLayout(
 		vertexDescription, elementCount, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_pInputLayout ) };
-
 	if ( FAILED( result ) )
 	{
 		throw error::effect::LayoutCreateFail();
@@ -91,9 +90,14 @@ ID3DX11Effect* Effect::operator->()
 	return m_pEffect;
 }
 
-ID3DX11EffectTechnique* Effect::GetTechniquePtr()
+ID3DX11EffectTechnique* Effect::GetTechniquePtr() const
 {
 	return m_pTechnique;
+}
+
+ID3D11InputLayout* Effect::GetInputLayoutPtr() const
+{
+	return m_pInputLayout;
 }
 
 ID3DX11Effect* Effect::LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile )

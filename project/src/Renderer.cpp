@@ -5,11 +5,13 @@
 // Standard includes
 #include <iostream>
 #include <SDL_syswm.h>
+#include <d3dx11effect.h>
 
 // Project includes
 #include "Renderer.h"
 #include "Error.h"
 #include "Mesh.h"
+#include "Timer.h"
 
 using namespace dae;
 
@@ -20,7 +22,7 @@ Renderer::Renderer( SDL_Window* pWindow )
 	SDL_GetWindowSize( pWindow, &m_Width, &m_Height );
 
 	// Initialize DirectX pipeline
-	const HRESULT result{ InitializeDirectX() };
+	HRESULT result{ InitializeDirectX() };
 	if ( result == S_OK )
 	{
 		m_IsInitialized = true;
@@ -31,7 +33,18 @@ Renderer::Renderer( SDL_Window* pWindow )
 		std::cout << "DirectX initialization failed!\n";
 	}
 
-	error::utils::HandleThrowingFunction( [&]() { Mesh testMesh{ m_pDevice, { {}, {}, {} }, { 0, 1, 2 } }; } );
+	error::utils::HandleThrowingFunction( [&]() {
+		m_Effect = Effect( m_pDevice, L"./resources/PosCol3D.fx" );
+		m_TestMesh = Mesh{
+			m_pDevice,
+			{
+				{ { 0.f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f } },
+				{ { 0.5f, -0.5f, 0.5f }, { 0.f, 0.f, 1.f } },
+				{ { -0.5f, -0.5f, 0.5f }, { 0.f, 1.f, 0.f } },
+			},
+			{ 0, 1, 2 },
+		};
+	} );
 }
 
 Renderer::~Renderer()
@@ -78,7 +91,7 @@ void Renderer::Update( const Timer& timer )
 {
 }
 
-void Renderer::Render() const
+void Renderer::Render()
 {
 	if ( !m_IsInitialized )
 	{
@@ -86,11 +99,12 @@ void Renderer::Render() const
 	}
 
 	// 1. Clear RTV & DSV
-	constexpr float color[4]{ 0.f, 0.f, 0.3f, 1.f };
+	const float color[4]{ 0.f, 0.f, 0.3f, 1.f };
 	m_pDeviceContext->ClearRenderTargetView( m_pRenderTargetView, color );
 	m_pDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0 );
 
-	// 2. Set pipeline
+	// 2. Draw
+	m_TestMesh.Draw( m_pDeviceContext, &m_Effect );
 
 	// 3. Present backbuffer
 	m_pSwapChain->Present( 0, 0 );

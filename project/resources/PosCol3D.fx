@@ -1,29 +1,30 @@
 // Input/Output
 struct VS_INPUT
 {
-	float3 position : POSITION;
-	float3 color : COLOR;
+	float3 Position : POSITION;
+	float3 Color : COLOR;
 };
 
 struct VS_OUTPUT
 {
-	float4 position : SV_POSITION;
-	float3 color : COLOR;
+	float4 Position : SV_POSITION;
+	float3 Color : COLOR;
 };
 
 // Vertex Shader
 VS_OUTPUT VtxShader(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.position = float4(input.position, 1.f);
-	output.color = input.color;
+	output.Position = float4(input.Position, 1.f);
+	output.Color = input.Color;
 	return output;
 }
 
 // Pixel Shader
 float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(input.color,1.f);
+	//return float4(input.Color,1.f);
+	return float4(1.f,1.f,1.f,1.f);
 }
 
 // Technique

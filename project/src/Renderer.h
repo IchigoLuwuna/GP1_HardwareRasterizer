@@ -2,10 +2,8 @@
 #define RENDERER_H
 
 // SDL Headers
+#include "Mesh.h"
 #include "SDL.h"
-#include "SDL_syswm.h"
-#include "SDL_surface.h"
-#include "SDL_image.h"
 #include "Effect.h"
 
 // DirectX Headers
@@ -33,10 +31,20 @@ public:
 	Renderer& operator=( Renderer&& ) noexcept = delete;
 
 	void Update( const Timer& timer );
-	void Render() const;
+	void Render();
 
 private:
+	int m_Width{};
+	int m_Height{};
+
+	bool m_IsInitialized{ false };
+
+	Effect m_Effect{};
+	Mesh m_TestMesh{}; // TODO:remove
+
+	// SDL: NON-OWNING
 	SDL_Window* m_pWindow{};
+	//
 
 	// DX: OWNING
 	ID3D11Device* m_pDevice{};
@@ -54,14 +62,9 @@ private:
 	// DX: NON-OWNING
 	//
 
-	int m_Width{};
-	int m_Height{};
-
-	bool m_IsInitialized{ false };
-
 	// DIRECTX
 	HRESULT InitializeDirectX();
-	//...
+	//
 };
 } // namespace dae
 

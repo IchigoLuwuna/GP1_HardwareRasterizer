@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <d3d11.h>
+#include "Effect.h"
 #include "Structs.h"
 
 namespace dae
@@ -10,8 +11,24 @@ namespace dae
 class Mesh
 {
 public:
-	Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices );
+	Mesh() = default;
+	Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<UINT>& indices );
+	Mesh( const Mesh& ) = delete;
+	Mesh( Mesh&& rhs );
+
+	Mesh& operator=( const Mesh& ) = delete;
+	Mesh& operator=( Mesh&& rhs );
+
 	~Mesh();
+
+	// Methods
+	void Draw( ID3D11DeviceContext* pDeviceContext, Effect* effect ) const;
+
+	// Getters
+	ID3D11Buffer* GetVertexBufferPtr() const;
+	ID3D11Buffer* GetIndexBufferPtr() const;
+	uint32_t GetVertexCount() const;
+	uint32_t GetIndexCount() const;
 
 private:
 	// SOFTWARE RESOURCES
