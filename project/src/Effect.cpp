@@ -1,6 +1,6 @@
-#include "Effect.h"
-#include <iostream>
 #include <sstream>
+#include <array>
+#include "Effect.h"
 #include "Error.h"
 
 Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
@@ -26,25 +26,28 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 
 	// Create Vertex Layout
 	constexpr int elementCount{ 2 };
-	D3D11_INPUT_ELEMENT_DESC vertexDescription[elementCount]{};
+	std::array<D3D11_INPUT_ELEMENT_DESC, elementCount> vertexDesc{};
 
-	vertexDescription[0].SemanticName = "POSITION";
-	vertexDescription[0].Format = DXGI_FORMAT_R32G32_FLOAT;
-	vertexDescription[0].AlignedByteOffset = 0;
-	vertexDescription[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexDesc[0].SemanticName = "POSITION";
+	vertexDesc[0].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[0].AlignedByteOffset = 0;
+	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDescription[1].SemanticName = "COLOR";
-	vertexDescription[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	vertexDescription[1].AlignedByteOffset = 12;
-	vertexDescription[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	vertexDesc[1].SemanticName = "COLOR";
+	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[1].AlignedByteOffset = 12;
+	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	//
 
 	// Create Input Layout
 	D3DX11_PASS_DESC passDesc{};
 	m_pTechnique->GetPassByIndex( 0 )->GetDesc( &passDesc );
 
-	HRESULT result{ pDevice->CreateInputLayout(
-		vertexDescription, elementCount, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_pInputLayout ) };
+	HRESULT result{ pDevice->CreateInputLayout( vertexDesc.data(),
+												vertexDesc.size(),
+												passDesc.pIAInputSignature,
+												passDesc.IAInputSignatureSize,
+												&m_pInputLayout ) };
 	if ( FAILED( result ) )
 	{
 		throw error::effect::LayoutCreateFail();
@@ -77,11 +80,6 @@ Effect::~Effect()
 	if ( m_pEffect )
 	{
 		m_pEffect->Release();
-	}
-
-	if ( m_pTechnique )
-	{
-		m_pTechnique->Release();
 	}
 }
 

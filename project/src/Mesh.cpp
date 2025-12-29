@@ -101,18 +101,18 @@ void Mesh::Draw( ID3D11DeviceContext* pDeviceContext, Effect* effect ) const
 
 	// 3. Set vertex buffer
 	constexpr UINT stride{ sizeof( Vertex ) };
-	constexpr UINT offset{ 0 };
+	constexpr UINT offset{};
 	pDeviceContext->IASetVertexBuffers( 0, 1, &m_pVertexBuffer, &stride, &offset );
 
 	// 4. Set index buffer
 	pDeviceContext->IASetIndexBuffer( m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0 );
 
 	// 5. Draw
-	D3DX11_TECHNIQUE_DESC techDesc{};
+	D3DX11_TECHNIQUE_DESC techDesc;
 	effect->GetTechniquePtr()->GetDesc( &techDesc );
-	for ( UINT pass{}; pass < techDesc.Passes; ++pass )
+	for ( UINT passIdx{}; passIdx < techDesc.Passes; ++passIdx )
 	{
-		effect->GetTechniquePtr()->GetPassByIndex( pass )->Apply( 0, pDeviceContext );
+		effect->GetTechniquePtr()->GetPassByIndex( passIdx )->Apply( 0, pDeviceContext );
 		pDeviceContext->DrawIndexed( m_IndexCount, 0, 0 );
 	}
 }

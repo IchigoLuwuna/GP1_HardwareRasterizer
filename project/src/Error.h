@@ -110,7 +110,24 @@ public:
 
 namespace rendering
 {
-}
+class RenderError : public Error
+{
+public:
+	virtual std::string category() const override
+	{
+		return "RENDER_ERR";
+	}
+};
+
+class MeshRenderError : public RenderError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "MeshRenderError";
+	}
+};
+} // namespace rendering
 
 namespace dx11
 {

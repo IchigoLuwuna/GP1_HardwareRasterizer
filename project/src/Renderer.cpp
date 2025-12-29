@@ -35,14 +35,18 @@ Renderer::Renderer( SDL_Window* pWindow )
 
 	error::utils::HandleThrowingFunction( [&]() {
 		m_Effect = Effect( m_pDevice, L"./resources/PosCol3D.fx" );
+
+		std::vector<Vertex> vertices{
+			{ { 0.f, .5f, .5f }, { 1.f, 0.f, 0.f } },
+			{ { .5f, -.5f, .5f }, { 0.f, 0.f, 1.f } },
+			{ { -.5f, -.5f, .5f }, { 0.f, 1.f, 0.f } },
+		};
+		std::vector<uint32_t> indices{ 0, 1, 2 };
+
 		m_TestMesh = Mesh{
 			m_pDevice,
-			{
-				{ { 0.f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f } },
-				{ { 0.5f, -0.5f, 0.5f }, { 0.f, 0.f, 1.f } },
-				{ { -0.5f, -0.5f, 0.5f }, { 0.f, 1.f, 0.f } },
-			},
-			{ 0, 1, 2 },
+			std::move( vertices ),
+			std::move( indices ),
 		};
 	} );
 }

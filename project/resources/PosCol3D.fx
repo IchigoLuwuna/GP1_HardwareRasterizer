@@ -23,8 +23,7 @@ VS_OUTPUT VtxShader(VS_INPUT input)
 // Pixel Shader
 float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
-	//return float4(input.Color,1.f);
-	return float4(1.f,1.f,1.f,1.f);
+	return float4(input.Color,1.f);
 }
 
 // Technique
