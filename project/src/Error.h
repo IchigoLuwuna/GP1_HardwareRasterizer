@@ -131,7 +131,78 @@ public:
 
 namespace dx11
 {
-}
+class DXInitError : public Error
+{
+public:
+	virtual std::string category() const override
+	{
+		return "DX_INIT_ERR";
+	}
+};
+
+class DeviceCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "DeviceCreateFail";
+	}
+};
+
+class DXGIFactoryCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "DXGIFactoryCreateFail";
+	}
+};
+
+class SwapChainCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "SwapChainCreateFail";
+	}
+};
+
+class DepthStencilCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "DepthStencilCreateFail";
+	}
+};
+
+class DepthStencilViewCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "DepthStencilViewCreateFail";
+	}
+};
+
+class GetRenderTargetBufferFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "GetRenderTargetBufferFail";
+	}
+};
+
+class RenderTargetViewCreateFail : public DXInitError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "RenderTargetViewCreateFail";
+	}
+};
+} // namespace dx11
 
 namespace utils
 {
