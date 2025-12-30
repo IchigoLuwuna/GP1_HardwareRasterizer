@@ -18,23 +18,12 @@ using namespace dae;
 Renderer::Renderer( SDL_Window* pWindow )
 	: m_pWindow( pWindow )
 {
-	// Initialize
+	// Initialize Window
 	SDL_GetWindowSize( pWindow, &m_Width, &m_Height );
 
-	// Initialize DirectX pipeline
-	HRESULT result{ InitializeDirectX() };
-	if ( result == S_OK )
-	{
-		m_IsInitialized = true;
-		std::cout << "DirectX is initialized and ready!\n";
-	}
-	else
-	{
-		std::cout << "DirectX initialization failed!\n";
-	}
-
-	error::utils::HandleThrowingFunction( [&]() {
-		m_Effect = Effect( m_pDevice, L"./resources/PosCol3D.fx" );
+	//
+	bool failed{ error::utils::HandleThrowingFunction( [&]() {
+		InitializeDirectX();
 
 		std::vector<Vertex> vertices{
 			{ { 0.f, .5f, .5f }, { 1.f, 0.f, 0.f } },
@@ -48,7 +37,16 @@ Renderer::Renderer( SDL_Window* pWindow )
 			std::move( vertices ),
 			std::move( indices ),
 		};
-	} );
+	} ) };
+	if ( failed )
+	{
+		std::cout << "DirectX initialisation failed\n";
+	}
+	else
+	{
+		m_IsInitialized = true;
+		std::cout << "DirectX is initialized and ready\n";
+	}
 }
 
 Renderer::~Renderer()
@@ -108,13 +106,13 @@ void Renderer::Render()
 	m_pDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0 );
 
 	// 2. Draw
-	m_TestMesh.Draw( m_pDeviceContext, &m_Effect );
+	m_TestMesh.Draw( m_pDeviceContext );
 
 	// 3. Present backbuffer
 	m_pSwapChain->Present( 0, 0 );
 }
 
-HRESULT Renderer::InitializeDirectX()
+void Renderer::InitializeDirectX()
 {
 	// 1. Create device context
 	const D3D_FEATURE_LEVEL featureLevel{ D3D_FEATURE_LEVEL_11_1 };
@@ -135,8 +133,7 @@ HRESULT Renderer::InitializeDirectX()
 									   &m_pDeviceContext ) };
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 1.1\n";
-		return result;
+		throw error::dx11::DeviceCreateFail();
 	}
 
 	// Create DXGI Factory
@@ -144,9 +141,8 @@ HRESULT Renderer::InitializeDirectX()
 	result = CreateDXGIFactory1( __uuidof( IDXGIFactory1 ), reinterpret_cast<void**>( &pDxgiFactory ) );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 1.2\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::DXGIFactoryCreateFail();
 	}
 
 	// 2. Create swapchain
@@ -166,23 +162,16 @@ HRESULT Renderer::InitializeDirectX()
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
-#ifdef __LINUX__
-	// SDL Window will have the VULKAN flag
-	// DXVK will handle turning the X11/Wayland window info into a WIN32 window
-	swapChainDesc.OutputWindow = m_pWindow;
-#else
 	// Get the handle (HWND) from the SDL backbuffer
 	SDL_SysWMinfo sysWMInfo{};
 	SDL_GetVersion( &sysWMInfo.version );
 	SDL_GetWindowWMInfo( m_pWindow, &sysWMInfo );
 	swapChainDesc.OutputWindow = sysWMInfo.info.win.window;
-#endif
 	result = pDxgiFactory->CreateSwapChain( m_pDevice, &swapChainDesc, &m_pSwapChain );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 2\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::SwapChainCreateFail();
 	}
 
 	// 3. Create DepthStencil (DS) & DepthStencilView (DSV)
@@ -209,17 +198,15 @@ HRESULT Renderer::InitializeDirectX()
 	result = m_pDevice->CreateTexture2D( &depthStencilDesc, nullptr, &m_pDepthStencilBuffer );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 3.1\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::DepthStencilCreateFail();
 	}
 
 	result = m_pDevice->CreateDepthStencilView( m_pDepthStencilBuffer, &depthStencilViewDesc, &m_pDepthStencilView );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 3.2\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::DepthStencilViewCreateFail();
 	}
 
 	// 4. Create RenderTarget (RT) & RenderTargetView (RTV)
@@ -228,18 +215,16 @@ HRESULT Renderer::InitializeDirectX()
 		m_pSwapChain->GetBuffer( 0, __uuidof( ID3D11Texture2D ), reinterpret_cast<void**>( &m_pRenderTargetBuffer ) );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 4.1\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::GetRenderTargetBufferFail();
 	}
 
 	// View
 	result = m_pDevice->CreateRenderTargetView( m_pRenderTargetBuffer, nullptr, &m_pRenderTargetView );
 	if ( FAILED( result ) )
 	{
-		std::cout << "Failed step 4.2\n";
 		pDxgiFactory->Release();
-		return result;
+		throw error::dx11::RenderTargetViewCreateFail();
 	}
 
 	// 5. Bind RTV & DSV to Output Merger Stage
@@ -256,6 +241,4 @@ HRESULT Renderer::InitializeDirectX()
 	m_pDeviceContext->RSSetViewports( 1, &viewport );
 
 	pDxgiFactory->Release();
-
-	return result;
 }

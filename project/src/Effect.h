@@ -28,11 +28,14 @@ public:
 	ID3D11InputLayout* GetInputLayoutPtr() const;
 
 private:
+	// HARDWARE RESOURCES: OWNING
 	ID3DX11Effect* m_pEffect{};
-	ID3D11VertexShader* m_pVShader{};
-	ID3D11PixelShader* m_pPShader{};
-	ID3DX11EffectTechnique* m_pTechnique{};
 	ID3D11InputLayout* m_pInputLayout{};
+	//
+
+	// HARDWARE RESOURCES: NON-OWNING
+	ID3DX11EffectTechnique* m_pTechnique{};
+	//
 
 	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
 };

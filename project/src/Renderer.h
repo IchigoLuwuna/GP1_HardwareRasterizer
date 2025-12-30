@@ -39,14 +39,13 @@ private:
 
 	bool m_IsInitialized{ false };
 
-	Effect m_Effect{};
 	Mesh m_TestMesh{}; // TODO:remove
 
 	// SDL: NON-OWNING
 	SDL_Window* m_pWindow{};
 	//
 
-	// DX: OWNING
+	// HARDWARE RESOURCES: OWNING
 	ID3D11Device* m_pDevice{};
 	ID3D11DeviceContext* m_pDeviceContext{};
 
@@ -59,11 +58,11 @@ private:
 	ID3D11DepthStencilView* m_pDepthStencilView{};
 	//
 
-	// DX: NON-OWNING
+	// HARDWARE RESOURCES: NON-OWNING
 	//
 
 	// DIRECTX
-	HRESULT InitializeDirectX();
+	void InitializeDirectX();
 	//
 };
 } // namespace dae

@@ -5,7 +5,7 @@
 namespace dae
 {
 Mesh::Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<UINT>& indices )
-	: m_pDevice{ pDevice }
+	: m_Effect( pDevice, L"./resources/PosCol3D.fx" )
 {
 	if ( vertices.size() == 0 )
 	{
@@ -62,6 +62,8 @@ Mesh::Mesh( Mesh&& rhs )
 
 	m_pIndexBuffer = rhs.m_pIndexBuffer;
 	rhs.m_pIndexBuffer = nullptr;
+
+	m_Effect = std::move( rhs.m_Effect );
 }
 
 Mesh& Mesh::operator=( Mesh&& rhs )
@@ -74,6 +76,8 @@ Mesh& Mesh::operator=( Mesh&& rhs )
 
 	m_pIndexBuffer = rhs.m_pIndexBuffer;
 	rhs.m_pIndexBuffer = nullptr;
+
+	m_Effect = std::move( rhs.m_Effect );
 
 	return *this;
 }
@@ -91,13 +95,13 @@ Mesh::~Mesh()
 	}
 }
 
-void Mesh::Draw( ID3D11DeviceContext* pDeviceContext, Effect* effect ) const
+void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
 {
 	// 1. Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
 	// 2. Set input layout
-	pDeviceContext->IASetInputLayout( effect->GetInputLayoutPtr() );
+	pDeviceContext->IASetInputLayout( m_Effect.GetInputLayoutPtr() );
 
 	// 3. Set vertex buffer
 	constexpr UINT stride{ sizeof( Vertex ) };
@@ -109,10 +113,10 @@ void Mesh::Draw( ID3D11DeviceContext* pDeviceContext, Effect* effect ) const
 
 	// 5. Draw
 	D3DX11_TECHNIQUE_DESC techDesc;
-	effect->GetTechniquePtr()->GetDesc( &techDesc );
+	m_Effect.GetTechniquePtr()->GetDesc( &techDesc );
 	for ( UINT passIdx{}; passIdx < techDesc.Passes; ++passIdx )
 	{
-		effect->GetTechniquePtr()->GetPassByIndex( passIdx )->Apply( 0, pDeviceContext );
+		m_Effect.GetTechniquePtr()->GetPassByIndex( passIdx )->Apply( 0, pDeviceContext );
 		pDeviceContext->DrawIndexed( m_IndexCount, 0, 0 );
 	}
 }

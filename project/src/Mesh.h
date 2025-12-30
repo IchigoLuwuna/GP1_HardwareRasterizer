@@ -22,7 +22,7 @@ public:
 	~Mesh();
 
 	// Methods
-	void Draw( ID3D11DeviceContext* pDeviceContext, Effect* effect ) const;
+	void Draw( ID3D11DeviceContext* pDeviceContext ) const;
 
 	// Getters
 	ID3D11Buffer* GetVertexBufferPtr() const;
@@ -38,10 +38,7 @@ private:
 	// HARDWARE RESOURCES: OWNING
 	ID3D11Buffer* m_pVertexBuffer{};
 	ID3D11Buffer* m_pIndexBuffer{};
-	//
-
-	// HARDWARE RESOURCES: NON-OWNING
-	ID3D11Device* m_pDevice{};
+	Effect m_Effect{};
 	//
 };
 }; // namespace dae

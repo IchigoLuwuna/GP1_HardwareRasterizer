@@ -41,12 +41,7 @@ int main( int argc, char* args[] )
 	const uint32_t width = 640;
 	const uint32_t height = 480;
 
-// Add the vulkan flag to support DXVK on Linux
-#ifdef __LINUX__
-	const SDL_WindowFlags windowFlags{ SDL_WINDOW_VULKAN };
-#else
 	const SDL_WindowFlags windowFlags{};
-#endif
 
 	SDL_Window* pWindow = SDL_CreateWindow( "DirectX - ***Insert Name/Class***",
 											SDL_WINDOWPOS_UNDEFINED,

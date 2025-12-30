@@ -87,6 +87,11 @@ Effect::~Effect()
 	{
 		m_pEffect->Release();
 	}
+
+	if ( m_pInputLayout )
+	{
+		m_pInputLayout->Release();
+	}
 }
 
 ID3DX11Effect* Effect::operator->()
