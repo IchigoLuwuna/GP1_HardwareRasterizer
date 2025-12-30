@@ -62,6 +62,9 @@ Effect::Effect( Effect&& rhs )
 
 	m_pTechnique = rhs.m_pTechnique;
 	rhs.m_pTechnique = nullptr;
+
+	m_pInputLayout = rhs.m_pInputLayout;
+	rhs.m_pInputLayout = nullptr;
 }
 
 Effect& Effect::operator=( Effect&& rhs )
@@ -71,6 +74,9 @@ Effect& Effect::operator=( Effect&& rhs )
 
 	m_pTechnique = rhs.m_pTechnique;
 	rhs.m_pTechnique = nullptr;
+
+	m_pInputLayout = rhs.m_pInputLayout;
+	rhs.m_pInputLayout = nullptr;
 
 	return *this;
 }
