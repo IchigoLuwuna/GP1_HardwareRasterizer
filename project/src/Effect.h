@@ -9,6 +9,11 @@
 #include <d3dcompiler.h>
 #include <d3dx11effect.h>
 
+// Project includes
+#include "Matrix.h"
+
+namespace dae
+{
 class Effect
 {
 public:
@@ -19,9 +24,12 @@ public:
 	Effect& operator=( const Effect& ) = delete;
 	Effect& operator=( Effect&& rhs );
 
-	~Effect();
+	~Effect() noexcept;
 
 	ID3DX11Effect* operator->(); // Access effect
+
+	// Setters
+	void SetWorldViewProjection( const Matrix& wvp );
 
 	// Getters
 	ID3DX11EffectTechnique* GetTechniquePtr() const;
@@ -35,9 +43,11 @@ private:
 
 	// HARDWARE RESOURCES: NON-OWNING
 	ID3DX11EffectTechnique* m_pTechnique{};
+	ID3DX11EffectMatrixVariable* m_pWorldViewProjection{};
 	//
 
 	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
 };
+} // namespace dae
 
 #endif

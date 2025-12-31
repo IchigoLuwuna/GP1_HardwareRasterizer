@@ -3,6 +3,8 @@
 #include "Effect.h"
 #include "Error.h"
 
+using namespace dae;
+
 Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 {
 	m_pEffect = LoadEffect( pDevice, assetFile );
@@ -53,6 +55,8 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 		throw error::effect::LayoutCreateFail();
 	}
 	//
+
+	m_pWorldViewProjection = m_pEffect->GetVariableByName( "gWorldViewProj" )->AsMatrix();
 }
 
 Effect::Effect( Effect&& rhs )
@@ -65,6 +69,9 @@ Effect::Effect( Effect&& rhs )
 
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+
+	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
+	rhs.m_pWorldViewProjection = nullptr;
 }
 
 Effect& Effect::operator=( Effect&& rhs )
@@ -78,10 +85,13 @@ Effect& Effect::operator=( Effect&& rhs )
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
 
+	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
+	rhs.m_pWorldViewProjection = nullptr;
+
 	return *this;
 }
 
-Effect::~Effect()
+Effect::~Effect() noexcept
 {
 	if ( m_pEffect )
 	{
@@ -97,6 +107,11 @@ Effect::~Effect()
 ID3DX11Effect* Effect::operator->()
 {
 	return m_pEffect;
+}
+
+void Effect::SetWorldViewProjection( const Matrix& wvp )
+{
+	m_pWorldViewProjection->SetMatrix( reinterpret_cast<const float*>( &wvp ) );
 }
 
 ID3DX11EffectTechnique* Effect::GetTechniquePtr() const
