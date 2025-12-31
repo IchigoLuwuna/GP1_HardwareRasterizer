@@ -22,22 +22,7 @@ Renderer::Renderer( SDL_Window* pWindow )
 	SDL_GetWindowSize( pWindow, &m_Width, &m_Height );
 
 	//
-	bool failed{ error::utils::HandleThrowingFunction( [&]() {
-		InitializeDirectX();
-
-		std::vector<Vertex> vertices{
-			{ { 0.f, .5f, .5f }, { 1.f, 0.f, 0.f } },
-			{ { .5f, -.5f, .5f }, { 0.f, 0.f, 1.f } },
-			{ { -.5f, -.5f, .5f }, { 0.f, 1.f, 0.f } },
-		};
-		std::vector<uint32_t> indices{ 0, 1, 2 };
-
-		m_TestMesh = Mesh{
-			m_pDevice,
-			std::move( vertices ),
-			std::move( indices ),
-		};
-	} ) };
+	const bool failed{ error::utils::HandleThrowingFunction( [&]() { InitializeDirectX(); } ) };
 	if ( failed )
 	{
 		std::cout << "DirectX initialisation failed\n";
@@ -49,7 +34,7 @@ Renderer::Renderer( SDL_Window* pWindow )
 	}
 }
 
-Renderer::~Renderer()
+Renderer::~Renderer() noexcept
 {
 	if ( m_pRenderTargetView )
 	{
@@ -93,7 +78,7 @@ void Renderer::Update( const Timer& timer )
 {
 }
 
-void Renderer::Render()
+void Renderer::Render( Scene* pScene )
 {
 	if ( !m_IsInitialized )
 	{
@@ -106,10 +91,20 @@ void Renderer::Render()
 	m_pDeviceContext->ClearDepthStencilView( m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0 );
 
 	// 2. Draw
-	m_TestMesh.Draw( m_pDeviceContext );
+	const bool failed{ error::utils::HandleThrowingFunction( [&]() { pScene->Draw( m_pDeviceContext ); } ) };
+	if ( failed )
+	{
+		m_IsInitialized = false;
+		std::cout << "Renderer has encountered an error\nShutting down!\n";
+	}
 
 	// 3. Present backbuffer
 	m_pSwapChain->Present( 0, 0 );
+}
+
+void Renderer::InitScene( Scene* pScene )
+{
+	pScene->Initialize( m_pDevice, ( static_cast<float>( m_Width ) / m_Height ) );
 }
 
 void Renderer::InitializeDirectX()
