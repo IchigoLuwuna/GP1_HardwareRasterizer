@@ -21,14 +21,7 @@ const Matrix& Camera::GetViewMatrix() const
 
 Matrix Camera::GetProjectionMatrix() const
 {
-	const float a{ m_Far / ( m_Far - m_Near ) }; // Depends on coordinate system
-	const float b{ -( m_Far * m_Near ) / ( m_Far - m_Near ) };
-	return Matrix{
-		{ 1.f / ( m_AspectRatio * m_Fov ), 0.f, 0.f, 0.f },
-		{ 0.f, 1.f / m_Fov, 0.f, 0.f },
-		{ 0.f, 0.f, a, 1.f },
-		{ 0.f, 0.f, b, 0.f },
-	};
+	return Matrix::CreatePerspectiveFovLH( m_Fov, m_AspectRatio, m_Near, m_Far );
 }
 
 const Vector3& Camera::GetPosition() const
