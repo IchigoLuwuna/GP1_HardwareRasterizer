@@ -1,3 +1,5 @@
+#ifndef STRUCTS_H
+#define STRUCTS_H
 #include "ColorRGB.h"
 
 namespace dae
@@ -135,3 +137,4 @@ inline Vector3 operator*( float scale, const Vector3& v )
 	return { v.x * scale, v.y * scale, v.z * scale };
 }
 } // namespace dae
+#endif
