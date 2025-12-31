@@ -11,6 +11,10 @@ struct Matrix final
 	Matrix( const Vector4& xAxis, const Vector4& yAxis, const Vector4& zAxis, const Vector4& t );
 	Matrix( const Matrix& m );
 
+	Matrix& operator=( const Matrix& m );
+
+	void Print();
+
 	Vector3 TransformVector( const Vector3& v ) const;
 	Vector3 TransformVector( float x, float y, float z ) const;
 	Vector3 TransformPoint( const Vector3& p ) const;
@@ -40,8 +44,8 @@ struct Matrix final
 	static Matrix Transpose( const Matrix& m );
 	static Matrix Inverse( const Matrix& m );
 
-	static Matrix CreateLookAtLH( const Vector3& origin, const Vector3& forward, const Vector3& up );
-	static Matrix CreatePerspectiveFovLH( float fovy, float aspect, float zn, float zf );
+	static Matrix CreateLookAtLH( const Vector3& origin, const Vector3& forward, const Vector3& up = Vector3::UnitY );
+	static Matrix CreatePerspectiveFovLH( float fov, float aspectRatio, float near, float far );
 
 	Vector4& operator[]( int index );
 	Vector4 operator[]( int index ) const;

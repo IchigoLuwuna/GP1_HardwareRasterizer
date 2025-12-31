@@ -2,6 +2,7 @@
 #include "MathHelpers.h"
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <cassert>
 
@@ -26,6 +27,29 @@ Matrix::Matrix( const Matrix& m )
 	data[1] = m[1];
 	data[2] = m[2];
 	data[3] = m[3];
+}
+
+Matrix& Matrix::operator=( const Matrix& m )
+{
+	if ( &m == this )
+	{
+		return *this;
+	}
+
+	data[0] = m[0];
+	data[1] = m[1];
+	data[2] = m[2];
+	data[3] = m[3];
+
+	return *this;
+}
+
+void Matrix::Print()
+{
+	std::cout << "[" << data[0].x << "," << data[0].y << "," << data[0].z << "," << data[0].w << "]\n"
+			  << "[" << data[1].x << "," << data[1].y << "," << data[1].z << "," << data[1].w << "]\n"
+			  << "[" << data[2].x << "," << data[2].y << "," << data[2].z << "," << data[2].w << "]\n"
+			  << "[" << data[3].x << "," << data[3].y << "," << data[3].z << "," << data[3].w << "]\n\n";
 }
 
 Vector3 Matrix::TransformVector( const Vector3& v ) const
@@ -185,16 +209,24 @@ Matrix Matrix::Inverse( const Matrix& m )
 	return out;
 }
 
-Matrix Matrix::CreateLookAtLH( const Vector3& origin, const Vector3& forward, const Vector3& up )
+Matrix Matrix::CreateLookAtLH( const Vector3& origin, const Vector3& forward, const Vector3& worldUp )
 {
-	// TODO
-	return {};
+	const Vector3 right{ Vector3::Cross( worldUp, forward ).Normalized() };
+	const Vector3 up{ Vector3::Cross( forward, right ).Normalized() };
+	return Matrix{ right, up, forward, origin }.Inverse();
 }
 
-Matrix Matrix::CreatePerspectiveFovLH( float fov, float aspect, float zn, float zf )
+Matrix Matrix::CreatePerspectiveFovLH( float fov, float aspectRatio, float near, float far )
 {
-	// TODO
-	return {};
+	const float a{ far / ( far - near ) }; // Depends on coordinate system
+	const float b{ -( far * near ) / ( far - near ) };
+
+	return Matrix{
+		{ 1.f / ( aspectRatio * fov ), 0.f, 0.f, 0.f },
+		{ 0.f, 1.f / fov, 0.f, 0.f },
+		{ 0.f, 0.f, a, 1.f },
+		{ 0.f, 0.f, b, 0.f },
+	};
 }
 
 Vector3 Matrix::GetAxisX() const
