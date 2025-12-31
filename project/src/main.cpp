@@ -4,10 +4,12 @@
 #include <SDL_image.h>
 #include <SDL_syswm.h>
 #include <SDL_video.h>
+#include "Error.h"
 #undef main
 
 // Standard includes
 #include <iostream>
+#include <memory>
 
 // Project includes
 #include "Timer.h"
@@ -57,6 +59,19 @@ int main( int argc, char* args[] )
 	Timer timer{};
 	Renderer renderer{ pWindow };
 
+	// Initialize scene
+	std::vector<std::unique_ptr<Scene>> scenePtrs{};
+	scenePtrs.push_back( std::make_unique<BasicTriangleScene>() );
+	scenePtrs.push_back( std::make_unique<CameraAndTexturesScene>() );
+	error::utils::HandleThrowingFunction( [&]() {
+		for ( auto& pScene : scenePtrs )
+		{
+			renderer.InitScene( pScene.get() );
+		}
+	} );
+	// TODO:Add scene switching
+	size_t sceneIdx{ 0 };
+
 	// Start loop
 	timer.Start();
 	float printTimer = 0.f;
@@ -64,7 +79,7 @@ int main( int argc, char* args[] )
 	while ( isLooping )
 	{
 		//--------- Get input events ---------
-		SDL_Event e;
+		SDL_Event e{};
 		while ( SDL_PollEvent( &e ) )
 		{
 			switch ( e.type )
@@ -82,9 +97,10 @@ int main( int argc, char* args[] )
 
 		//--------- Update ---------
 		renderer.Update( timer );
+		scenePtrs[sceneIdx]->Update( &timer );
 
 		//--------- Render ---------
-		renderer.Render();
+		renderer.Render( scenePtrs[sceneIdx].get() );
 
 		//--------- Timer ---------
 		timer.Update();
