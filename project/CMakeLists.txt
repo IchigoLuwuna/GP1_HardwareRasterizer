@@ -3,12 +3,14 @@ set(SOURCES
     "src/main.cpp"
     "src/LeakDetector.cpp"
     "src/Matrix.cpp"
-    "src/Renderer.cpp"
-    "src/Timer.cpp"
+    "src/ColorRGB.cpp"
     "src/Structs.cpp"
+    "src/Timer.cpp"
+    "src/Renderer.cpp"
     "src/Effect.cpp"
     "src/Mesh.cpp"
-    "src/ColorRGB.cpp"
+    "src/Scene.cpp"
+    "src/Camera.cpp"
 )
 
 # Create the executable
