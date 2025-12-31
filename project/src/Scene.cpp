@@ -33,7 +33,7 @@ void Scene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 
 void BasicTriangleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 {
-	m_Camera = Camera{ { 0.f, 0.f, -10.f }, 45.f, aspectRatio };
+	m_Camera = Camera{ { 0.f, 0.f, -1.f }, 45.f, aspectRatio };
 
 	std::vector<Vertex> vertices{
 		{ { 0.0f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f } },
