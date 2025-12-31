@@ -1,5 +1,6 @@
+#ifndef ERROR_H
+#define ERROR_H
 // This header provides custom error types and functions to simplify exception handling
-// Reserves no memory to prevent hard crashes in cases of memory failure
 // Polymorphic -> should be caught by reference
 // Uses namespaces to clearly categorize which errors belong to what
 #include <cstdint>
@@ -108,6 +109,27 @@ public:
 };
 } // namespace mesh
 
+namespace scene
+{
+class SceneError : public Error
+{
+public:
+	virtual std::string category() const override
+	{
+		return "SCENE_ERR";
+	}
+};
+
+class SceneIsEmpty : public SceneError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "SceneIsEmpty";
+	}
+};
+}; // namespace scene
+
 namespace rendering
 {
 class RenderError : public Error
@@ -215,7 +237,7 @@ bool HandleThrowingFunction( Function f ) noexcept // All exceptions are contain
 	}
 	catch ( const Error& e )
 	{
-		std::cout << "Caught exception with category [" << e.category() << "]: " << e.what() << "\n ";
+		std::cout << "Caught exception with category [" << e.category() << "]: " << e.what() << "\n";
 		return true;
 	}
 	catch ( const std::exception& e )
@@ -248,3 +270,4 @@ bool HandleThrowingFunction( Function f ) noexcept // All exceptions are contain
 }
 } // namespace utils
 } // namespace error
+#endif
