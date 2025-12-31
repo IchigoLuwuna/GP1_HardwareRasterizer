@@ -82,7 +82,7 @@ Mesh& Mesh::operator=( Mesh&& rhs )
 	return *this;
 }
 
-Mesh::~Mesh()
+Mesh::~Mesh() noexcept
 {
 	if ( m_pVertexBuffer )
 	{
@@ -93,6 +93,11 @@ Mesh::~Mesh()
 	{
 		m_pIndexBuffer->Release();
 	}
+}
+
+void Mesh::SetWorldViewProjection( const Matrix& wvp )
+{
+	m_Effect.SetWorldViewProjection( m_WorldMatrix * wvp );
 }
 
 void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
@@ -129,6 +134,11 @@ ID3D11Buffer* Mesh::GetVertexBufferPtr() const
 ID3D11Buffer* Mesh::GetIndexBufferPtr() const
 {
 	return m_pIndexBuffer;
+}
+
+Effect* Mesh::GetEffectPtr()
+{
+	return &m_Effect;
 }
 
 uint32_t Mesh::GetVertexCount() const

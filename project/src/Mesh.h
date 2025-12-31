@@ -19,14 +19,18 @@ public:
 	Mesh& operator=( const Mesh& ) = delete;
 	Mesh& operator=( Mesh&& rhs );
 
-	~Mesh();
+	~Mesh() noexcept;
 
 	// Methods
 	void Draw( ID3D11DeviceContext* pDeviceContext ) const;
 
+	// Setters
+	void SetWorldViewProjection( const Matrix& wvp );
+
 	// Getters
 	ID3D11Buffer* GetVertexBufferPtr() const;
 	ID3D11Buffer* GetIndexBufferPtr() const;
+	Effect* GetEffectPtr();
 	uint32_t GetVertexCount() const;
 	uint32_t GetIndexCount() const;
 
@@ -34,6 +38,7 @@ private:
 	// SOFTWARE RESOURCES
 	uint32_t m_VertexCount{};
 	uint32_t m_IndexCount{};
+	Matrix m_WorldMatrix{ Matrix::CreateIdentity() };
 
 	// HARDWARE RESOURCES: OWNING
 	ID3D11Buffer* m_pVertexBuffer{};
