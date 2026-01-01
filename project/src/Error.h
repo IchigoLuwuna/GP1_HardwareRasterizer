@@ -51,6 +51,15 @@ public:
 	}
 };
 
+class LayoutCreateFail : public EffectError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "LayoutCreateFail";
+	}
+};
+
 class InvalidTechnique : public EffectError
 {
 public:
@@ -60,12 +69,21 @@ public:
 	}
 };
 
-class LayoutCreateFail : public EffectError
+class InvalidWorldViewProjection : public EffectError
 {
 public:
 	virtual std::string what() const override
 	{
-		return "LayoutCreateFail";
+		return "InvalidWorldViewProjection";
+	}
+};
+
+class InvalidDiffuseMap : public EffectError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "InvalidDiffuseMap";
 	}
 };
 } // namespace effect
