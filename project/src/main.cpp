@@ -101,7 +101,7 @@ int main( int argc, char* args[] )
 		//--------- Render ---------
 		renderer.Render( scenePtrs[sceneIdx].get() );
 
-		//--------- Timer ---------
+		//--------- Timer ----------
 		timer.Update();
 		printTimer += timer.GetElapsed();
 		if ( printTimer >= 1.f )
@@ -113,5 +113,4 @@ int main( int argc, char* args[] )
 	timer.Stop();
 
 	ShutDown( pWindow );
-	return 0;
 }
