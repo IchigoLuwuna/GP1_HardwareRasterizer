@@ -11,6 +11,7 @@
 
 // Project includes
 #include "Matrix.h"
+#include "Texture.h"
 
 namespace dae
 {
@@ -30,6 +31,7 @@ public:
 
 	// Setters
 	void SetWorldViewProjection( const Matrix& wvp );
+	void SetDiffuseMap( const Texture& diffuseTexture );
 
 	// Getters
 	ID3DX11EffectTechnique* GetTechniquePtr() const;

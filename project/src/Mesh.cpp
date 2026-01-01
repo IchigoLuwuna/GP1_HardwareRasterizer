@@ -8,9 +8,11 @@ Mesh::Mesh( ID3D11Device* pDevice,
 			const std::vector<Vertex>& vertices,
 			const std::vector<UINT>& indices,
 			D3D11_PRIMITIVE_TOPOLOGY topology,
-			const std::wstring& effectPath )
+			const std::wstring& effectPath,
+			const std::string& texturePath )
 	: m_Topology( topology )
 	, m_Effect( pDevice, effectPath )
+	, m_Texture( pDevice, texturePath )
 {
 	if ( vertices.size() == 0 )
 	{
@@ -54,6 +56,10 @@ Mesh::Mesh( ID3D11Device* pDevice,
 	{
 		throw static_cast<int>( result );
 	}
+	//
+
+	// Pass texture view to effect
+	m_Effect.SetDiffuseMap( m_Texture );
 	//
 }
 

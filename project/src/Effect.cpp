@@ -149,6 +149,11 @@ void Effect::SetWorldViewProjection( const Matrix& wvp )
 	m_pWorldViewProjection->SetMatrix( reinterpret_cast<const float*>( &wvp ) );
 }
 
+void Effect::SetDiffuseMap( const Texture& diffuseTexture )
+{
+	m_pDiffuseMap->SetResource( diffuseTexture.GetSRV() );
+}
+
 ID3DX11EffectTechnique* Effect::GetTechniquePtr() const
 {
 	return m_pTechnique;

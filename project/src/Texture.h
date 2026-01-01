@@ -17,6 +17,8 @@ public:
 	Texture& operator=( const Texture& ) = delete;
 	Texture& operator=( Texture&& rhs );
 
+	ID3D11ShaderResourceView* GetSRV() const;
+
 private:
 	ID3D11Texture2D* m_pResource{};
 	ID3D11ShaderResourceView* m_pResourceView{};

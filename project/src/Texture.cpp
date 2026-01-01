@@ -90,4 +90,9 @@ Texture::~Texture() noexcept
 		m_pResource->Release();
 	}
 }
+
+ID3D11ShaderResourceView* Texture::GetSRV() const
+{
+	return m_pResourceView;
+}
 } // namespace dae
