@@ -27,7 +27,7 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	}
 
 	// Create Vertex Layout
-	constexpr int elementCount{ 2 };
+	constexpr int elementCount{ 3 };
 	std::array<D3D11_INPUT_ELEMENT_DESC, elementCount> vertexDesc{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -39,6 +39,11 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[1].AlignedByteOffset = 12;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[2].SemanticName = "TEXCOORD";
+	vertexDesc[2].Format = DXGI_FORMAT_R32G32_FLOAT;
+	vertexDesc[2].AlignedByteOffset = 24;
+	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	//
 
 	// Create Input Layout
@@ -61,6 +66,11 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 
 Effect::Effect( Effect&& rhs )
 {
+	if ( this == &rhs )
+	{
+		return;
+	}
+
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
 
@@ -76,6 +86,11 @@ Effect::Effect( Effect&& rhs )
 
 Effect& Effect::operator=( Effect&& rhs )
 {
+	if ( this == &rhs )
+	{
+		return *this;
+	}
+
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
 

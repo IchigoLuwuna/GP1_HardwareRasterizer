@@ -125,6 +125,7 @@ struct Vertex final
 {
 	Vector3 position{};
 	ColorRGB color{};
+	Vector2 UV{};
 };
 
 // Global Operators
