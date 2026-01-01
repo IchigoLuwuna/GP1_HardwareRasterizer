@@ -40,8 +40,6 @@ private:
 
 	bool m_IsInitialized{ false };
 
-	Mesh m_TestMesh{}; // TODO:remove
-
 	// SDL: NON-OWNING
 	SDL_Window* m_pWindow{};
 	//
