@@ -31,52 +31,26 @@ void Scene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 {
 }
 
-void BasicTriangleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
-{
-	m_Camera = Camera{ { 0.f, 0.f, -1.f }, 45.f, aspectRatio };
-
-	std::vector<Vertex> vertices{
-		{ { 0.0f, 0.5f, 0.5f }, { 1.f, 0.f, 0.f } },
-		{ { 0.5f, -0.5f, 0.5f }, { 0.f, 0.f, 1.f } },
-		{ { -0.5f, -0.5f, 0.5f }, { 0.f, 1.f, 0.f } },
-	};
-	std::vector<uint32_t> indices{ 0, 1, 2 };
-
-	m_Meshes.push_back( Mesh( pDevice, vertices, indices ) );
-}
-
 void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 {
 	m_Camera = Camera{ { 0.f, 0.f, -10.f }, 45.f, aspectRatio };
 
-	std::vector<Vertex> vertices{
-		{
-			{
-				0.f,
-				3.f,
-				2.f,
-			},
-			{ 1.f, 0.f, 0.f },
-		},
-		{
-			{
-				3.f,
-				-3.f,
-				2.f,
-			},
-			{ 0.f, 0.f, 1.f },
-		},
-		{
-			{
-				-3.f,
-				-3.f,
-				2.f,
-			},
-			{ 0.f, 1.f, 0.f },
-		},
+	const std::vector<Vertex> vertices{
+		{ { 3.f, 3.f, 2.f }, { 1.f, 0.f, 0.f }, { 1.f, 0.f } },
+		{ { 3.f, -3.f, 2.f }, { 0.f, 0.f, 1.f }, { 1.f, 1.f } },
+		{ { -3.f, -3.f, 2.f }, { 0.f, 1.f, 0.f }, { 0.f, 1.f } },
+		{ { -3.f, 3.f, 2.f }, { 1.f, 0.f, 1.f }, { 0.f, 0.f } },
 	};
-	std::vector<uint32_t> indices{ 0, 1, 2 };
+	const std::vector<uint32_t> indices{ 0, 1, 2, 3, 0, 1 };
+	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
+	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
 
-	m_Meshes.push_back( Mesh( pDevice, vertices, indices ) );
+	m_Meshes.push_back( Mesh{
+		pDevice,
+		vertices,
+		indices,
+		topology,
+		effectPath,
+	} );
 }
 } // namespace dae

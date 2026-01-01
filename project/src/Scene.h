@@ -23,12 +23,6 @@ protected:
 	std::vector<Mesh> m_Meshes{};
 };
 
-class BasicTriangleScene : public Scene
-{
-public:
-	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
-};
-
 class CameraAndTexturesScene : public Scene
 {
 public:
