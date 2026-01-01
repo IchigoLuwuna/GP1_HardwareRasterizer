@@ -19,7 +19,7 @@ public:
 	virtual std::string what() const
 	{
 		return "Error";
-	};
+	}
 };
 
 namespace effect
@@ -39,7 +39,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "CreateFail";
-	};
+	}
 };
 
 class InvalidEffect : public EffectError
@@ -48,7 +48,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "InvalidEffect";
-	};
+	}
 };
 
 class InvalidTechnique : public EffectError
@@ -57,7 +57,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "InvalidTechnique";
-	};
+	}
 };
 
 class LayoutCreateFail : public EffectError
@@ -66,7 +66,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "LayoutCreateFail";
-	};
+	}
 };
 } // namespace effect
 
@@ -87,7 +87,16 @@ public:
 	virtual std::string what() const override
 	{
 		return "ResourceCreateFail";
-	};
+	}
+};
+
+class ResourceViewCreateFail : public TextureError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "ResourceViewCreateFail";
+	}
 };
 } // namespace texture
 
@@ -99,7 +108,7 @@ public:
 	virtual std::string category() const override
 	{
 		return "MESH_ERR";
-	};
+	}
 };
 
 class CreateFail : public MeshError
@@ -108,7 +117,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "CreateFail";
-	};
+	}
 };
 
 class BufferCreateFail : public MeshError
@@ -117,7 +126,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "BufferCreateFail";
-	};
+	}
 };
 
 class BufferIsEmpty : public MeshError
@@ -126,7 +135,7 @@ public:
 	virtual std::string what() const override
 	{
 		return "BufferIsEmpty";
-	};
+	}
 };
 } // namespace mesh
 
