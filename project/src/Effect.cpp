@@ -61,7 +61,19 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	}
 	//
 
+	// Get pointers to shader variables
 	m_pWorldViewProjection = m_pEffect->GetVariableByName( "gWorldViewProj" )->AsMatrix();
+	if ( !m_pWorldViewProjection->IsValid() )
+	{
+		throw error::effect::InvalidWorldViewProjection();
+	}
+
+	m_pDiffuseMap = m_pEffect->GetVariableByName( "gDiffuseMap" )->AsShaderResource();
+	if ( !m_pDiffuseMap->IsValid() )
+	{
+		throw error::effect::InvalidDiffuseMap();
+	}
+	//
 }
 
 Effect::Effect( Effect&& rhs )
@@ -71,17 +83,21 @@ Effect::Effect( Effect&& rhs )
 		return;
 	}
 
+	// OWNING
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
-
-	m_pTechnique = rhs.m_pTechnique;
-	rhs.m_pTechnique = nullptr;
-
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+	//
 
+	// NON-OWNING
+	m_pTechnique = rhs.m_pTechnique;
+	rhs.m_pTechnique = nullptr;
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+	m_pDiffuseMap = rhs.m_pDiffuseMap;
+	rhs.m_pDiffuseMap = nullptr;
+	//
 }
 
 Effect& Effect::operator=( Effect&& rhs )
@@ -91,17 +107,21 @@ Effect& Effect::operator=( Effect&& rhs )
 		return *this;
 	}
 
+	// OWNING
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
-
-	m_pTechnique = rhs.m_pTechnique;
-	rhs.m_pTechnique = nullptr;
-
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+	//
 
+	// NON-OWNING
+	m_pTechnique = rhs.m_pTechnique;
+	rhs.m_pTechnique = nullptr;
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+	m_pDiffuseMap = rhs.m_pDiffuseMap;
+	rhs.m_pDiffuseMap = nullptr;
+	//
 
 	return *this;
 }

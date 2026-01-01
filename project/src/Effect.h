@@ -44,6 +44,7 @@ private:
 	// HARDWARE RESOURCES: NON-OWNING
 	ID3DX11EffectTechnique* m_pTechnique{};
 	ID3DX11EffectMatrixVariable* m_pWorldViewProjection{};
+	ID3DX11EffectShaderResourceVariable* m_pDiffuseMap{};
 	//
 
 	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
