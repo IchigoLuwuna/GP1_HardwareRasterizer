@@ -61,7 +61,6 @@ int main( int argc, char* args[] )
 
 	// Initialize scene
 	std::vector<std::unique_ptr<Scene>> scenePtrs{};
-	scenePtrs.push_back( std::make_unique<BasicTriangleScene>() );
 	scenePtrs.push_back( std::make_unique<CameraAndTexturesScene>() );
 	error::utils::HandleThrowingFunction( [&]() {
 		for ( auto& pScene : scenePtrs )
