@@ -2,7 +2,6 @@
 #define RENDERER_H
 
 // SDL Headers
-#include "Mesh.h"
 #include "SDL.h"
 #include "Effect.h"
 
@@ -13,6 +12,7 @@
 #include <d3dx11effect.h>
 
 // Framework Headers
+#include "Mesh.h"
 #include "Timer.h"
 #include "Scene.h"
 
