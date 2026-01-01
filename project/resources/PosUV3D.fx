@@ -2,6 +2,13 @@
 // | Globals |
 // -----------
 float4x4 gWorldViewProj : WorldViewProjection;
+Texture2D gDiffuseMap : DiffuseMap;
+SamplerState gSamPoint : SamPoint
+{
+	Filter = MIN_MAG_MIP_POINT;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
 
 // -----------
 // | Structs |
@@ -37,8 +44,7 @@ VS_OUTPUT VtxShader(VS_INPUT input)
 // Pixel Shader
 float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
-	//return float4(input.Color, 1.f);
-	return float4(input.UV.x, 0.f, input.UV.y, 1.f);
+	return gDiffuseMap.Sample(gSamPoint, input.UV);
 }
 
 // --------------

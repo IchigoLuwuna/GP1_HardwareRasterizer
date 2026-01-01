@@ -11,6 +11,7 @@ set(SOURCES
     "src/Mesh.cpp"
     "src/Scene.cpp"
     "src/Camera.cpp"
+    "src/Texture.cpp"
 )
 
 # Create the executable
