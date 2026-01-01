@@ -8,6 +8,7 @@ namespace dae
 class Texture
 {
 public:
+	Texture() = default;
 	Texture( ID3D11Device* pDevice, const std::string& texturePath );
 	Texture( const Texture& ) = delete;
 	Texture( Texture&& rhs );
