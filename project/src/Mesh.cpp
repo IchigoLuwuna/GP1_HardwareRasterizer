@@ -4,8 +4,13 @@
 
 namespace dae
 {
-Mesh::Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<UINT>& indices )
-	: m_Effect( pDevice, L"./resources/PosCol3D.fx" )
+Mesh::Mesh( ID3D11Device* pDevice,
+			const std::vector<Vertex>& vertices,
+			const std::vector<UINT>& indices,
+			D3D11_PRIMITIVE_TOPOLOGY topology,
+			const std::wstring& effectPath )
+	: m_Topology( topology )
+	, m_Effect( pDevice, effectPath )
 {
 	if ( vertices.size() == 0 )
 	{
@@ -54,8 +59,14 @@ Mesh::Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const st
 
 Mesh::Mesh( Mesh&& rhs )
 {
+	if ( this == &rhs )
+	{
+		return;
+	}
+
 	m_VertexCount = rhs.m_VertexCount;
 	m_IndexCount = rhs.m_IndexCount;
+	m_Topology = rhs.m_Topology;
 
 	m_pVertexBuffer = rhs.m_pVertexBuffer;
 	rhs.m_pVertexBuffer = nullptr;
@@ -68,8 +79,14 @@ Mesh::Mesh( Mesh&& rhs )
 
 Mesh& Mesh::operator=( Mesh&& rhs )
 {
+	if ( this == &rhs )
+	{
+		return *this;
+	}
+
 	m_VertexCount = rhs.m_VertexCount;
 	m_IndexCount = rhs.m_IndexCount;
+	m_Topology = rhs.m_Topology;
 
 	m_pVertexBuffer = rhs.m_pVertexBuffer;
 	rhs.m_pVertexBuffer = nullptr;
@@ -103,7 +120,7 @@ void Mesh::SetWorldViewProjection( const Matrix& wvp )
 void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
 {
 	// 1. Set primitive topology
-	pDeviceContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+	pDeviceContext->IASetPrimitiveTopology( m_Topology );
 
 	// 2. Set input layout
 	pDeviceContext->IASetInputLayout( m_Effect.GetInputLayoutPtr() );

@@ -12,7 +12,11 @@ class Mesh
 {
 public:
 	Mesh() = default;
-	Mesh( ID3D11Device* pDevice, const std::vector<Vertex>& vertices, const std::vector<UINT>& indices );
+	Mesh( ID3D11Device* pDevice,
+		  const std::vector<Vertex>& vertices,
+		  const std::vector<UINT>& indices,
+		  D3D11_PRIMITIVE_TOPOLOGY topology,
+		  const std::wstring& effectPath );
 	Mesh( const Mesh& ) = delete;
 	Mesh( Mesh&& rhs );
 
@@ -38,6 +42,7 @@ private:
 	// SOFTWARE RESOURCES
 	uint32_t m_VertexCount{};
 	uint32_t m_IndexCount{};
+	D3D11_PRIMITIVE_TOPOLOGY m_Topology{};
 	Matrix m_WorldMatrix{ Matrix::CreateIdentity() };
 
 	// HARDWARE RESOURCES: OWNING
