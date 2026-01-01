@@ -70,6 +70,27 @@ public:
 };
 } // namespace effect
 
+namespace texture
+{
+class TextureError : public Error
+{
+public:
+	virtual std::string category() const override
+	{
+		return "TEX_ERR";
+	}
+};
+
+class ResourceCreateFail : public TextureError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "ResourceCreateFail";
+	};
+};
+} // namespace texture
+
 namespace mesh
 {
 class MeshError : public Error
@@ -128,7 +149,7 @@ public:
 		return "SceneIsEmpty";
 	}
 };
-}; // namespace scene
+} // namespace scene
 
 namespace rendering
 {
@@ -237,7 +258,7 @@ bool HandleThrowingFunction( Function f ) noexcept // All exceptions are contain
 	}
 	catch ( const Error& e )
 	{
-		std::cout << "Caught exception with category [" << e.category() << "]: " << e.what() << "\n";
+		std::cout << "[" << e.category() << "]: " << e.what() << "\n";
 		return true;
 	}
 	catch ( const std::exception& e )
