@@ -6,8 +6,8 @@ Texture2D gDiffuseMap : DiffuseMap;
 SamplerState gSamPoint : SamPoint
 {
 	Filter = MIN_MAG_MIP_POINT;
-	AddressU = Wrap;
-	AddressV = Wrap;
+	AddressU = Border;
+	AddressV = Border;
 };
 
 // -----------
