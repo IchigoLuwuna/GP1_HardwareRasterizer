@@ -28,6 +28,12 @@ class CameraAndTexturesScene : public Scene
 public:
 	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
 };
+
+class VehicleScene : public Scene
+{
+public:
+	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
+};
 } // namespace dae
 
 #endif

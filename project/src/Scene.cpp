@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Error.h"
+#include "Utils.h"
 
 namespace dae
 {
@@ -45,6 +46,28 @@ void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRati
 	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
 	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
 	const std::string texturePath{ "./resources/uv_grid_2.png" };
+
+	m_Meshes.push_back( Mesh{
+		pDevice,
+		vertices,
+		indices,
+		topology,
+		effectPath,
+		texturePath,
+	} );
+}
+
+void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
+{
+	m_Camera = Camera{ { 0.f, 0.f, -64.f }, 45.f, aspectRatio };
+
+	std::vector<Vertex> vertices{};
+	std::vector<uint32_t> indices{};
+
+	Utils::ParseOBJ( "./resources/vehicle.obj", vertices, indices );
+	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST };
+	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
+	const std::string texturePath{ "./resources/vehicle_diffuse.png" };
 
 	m_Meshes.push_back( Mesh{
 		pDevice,
