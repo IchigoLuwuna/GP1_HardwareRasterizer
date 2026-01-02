@@ -22,6 +22,27 @@ public:
 	}
 };
 
+namespace file
+{
+class FileError : public Error
+{
+public:
+	virtual std::string category() const
+	{
+		return "FILE_ERR";
+	}
+};
+
+class CouldNotOpenFile : public FileError
+{
+public:
+	virtual std::string what() const
+	{
+		return "CouldNotOpenFile";
+	}
+};
+} // namespace file
+
 namespace effect
 {
 class EffectError : public Error
