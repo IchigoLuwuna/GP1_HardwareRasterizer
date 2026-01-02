@@ -12,7 +12,6 @@
 #include <d3dx11effect.h>
 
 // Framework Headers
-#include "Mesh.h"
 #include "Timer.h"
 #include "Scene.h"
 
