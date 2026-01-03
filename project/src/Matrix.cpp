@@ -324,13 +324,13 @@ Vector4 Matrix::operator[]( int index ) const
 Matrix Matrix::operator*( const Matrix& m ) const
 {
 	Matrix result{};
-	Matrix m_transposed = Transpose( m );
+	Matrix transposed = Transpose( m );
 
 	for ( int r{ 0 }; r < 4; ++r )
 	{
 		for ( int c{ 0 }; c < 4; ++c )
 		{
-			result[r][c] = Vector4::Dot( data[r], m_transposed[c] );
+			result[r][c] = Vector4::Dot( data[r], transposed[c] );
 		}
 	}
 
@@ -340,13 +340,13 @@ Matrix Matrix::operator*( const Matrix& m ) const
 const Matrix& Matrix::operator*=( const Matrix& m )
 {
 	Matrix copy{ *this };
-	Matrix m_transposed = Transpose( m );
+	Matrix transposed = Transpose( m );
 
 	for ( int r{ 0 }; r < 4; ++r )
 	{
 		for ( int c{ 0 }; c < 4; ++c )
 		{
-			data[r][c] = Vector4::Dot( copy[r], m_transposed[c] );
+			data[r][c] = Vector4::Dot( copy[r], transposed[c] );
 		}
 	}
 
