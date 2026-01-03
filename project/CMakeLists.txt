@@ -12,6 +12,7 @@ set(SOURCES
     "src/Scene.cpp"
     "src/Camera.cpp"
     "src/Texture.cpp"
+    "src/Sampler.cpp"
 )
 
 # Create the executable
