@@ -108,12 +108,12 @@ public:
 	}
 };
 
-class InvalidSamplerState : public EffectError
+class InvalidSampler : public EffectError
 {
 public:
 	virtual std::string what() const override
 	{
-		return "InvalidSamplerState";
+		return "InvalidSampler";
 	}
 };
 } // namespace effect
