@@ -4,8 +4,16 @@
 #include <SDL_image.h>
 #include <SDL_syswm.h>
 #include <SDL_video.h>
+#include <consoleapi2.h>
 #include "Error.h"
+
+// Windows header
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #undef main
+#undef min
+#undef max
+//
 
 // Standard includes
 #include <iostream>
@@ -24,6 +32,12 @@ void ShutDown( SDL_Window* pWindow )
 {
 	SDL_DestroyWindow( pWindow );
 	SDL_Quit();
+}
+
+void SetCoutColor( int color )
+{
+	HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+	SetConsoleTextAttribute( consoleHandle, color );
 }
 
 int main( int argc, char* args[] )

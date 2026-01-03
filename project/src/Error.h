@@ -7,6 +7,11 @@
 #include <iostream>
 #include <string>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef min
+#undef max
+
 namespace error
 {
 class Error
@@ -315,32 +320,62 @@ bool HandleThrowingFunction( Function f ) noexcept // All exceptions are contain
 	}
 	catch ( const Error& e )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "[" << e.category() << "]: " << e.what() << "\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 	catch ( const std::exception& e )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "Caught exception: " << e.what() << "\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 	catch ( const std::string& eString )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "Caught exception: " << eString << "\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 	catch ( int eCode )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "Caught exception: CODE=[0x" << std::hex << eCode << "]\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 	catch ( uint32_t eCode )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "Caught exception: CODE=[0x" << std::hex << eCode << "]\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 	catch ( ... )
 	{
+		HANDLE consoleHandle{ GetStdHandle( STD_OUTPUT_HANDLE ) };
+		SetConsoleTextAttribute( consoleHandle, 12 );
+
 		std::cout << "Caught unhandled exception\n";
+
+		SetConsoleTextAttribute( consoleHandle, 7 );
 		return true;
 	}
 
