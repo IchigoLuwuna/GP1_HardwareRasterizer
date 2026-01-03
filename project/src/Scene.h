@@ -1,9 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
-#include <vector>
 #include "Camera.h"
 #include "Mesh.h"
-#include "Timer.h"
 
 namespace dae
 {
@@ -21,6 +19,8 @@ protected:
 	Camera m_Camera{};
 
 	std::vector<Mesh> m_Meshes{};
+	// TODO:Make this a bitmask
+	bool m_F2Held{};
 };
 
 class CameraAndTexturesScene : public Scene

@@ -74,6 +74,10 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 		throw error::effect::InvalidDiffuseMap();
 	}
 	//
+
+	// Create the sampler state
+	m_Sampler = Sampler( pDevice, m_pEffect );
+	//
 }
 
 Effect::Effect( Effect&& rhs )
@@ -88,6 +92,7 @@ Effect::Effect( Effect&& rhs )
 	rhs.m_pEffect = nullptr;
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+	m_Sampler = std::move( rhs.m_Sampler );
 	//
 
 	// NON-OWNING
@@ -112,6 +117,7 @@ Effect& Effect::operator=( Effect&& rhs )
 	rhs.m_pEffect = nullptr;
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+	m_Sampler = std::move( rhs.m_Sampler );
 	//
 
 	// NON-OWNING
@@ -142,6 +148,11 @@ Effect::~Effect() noexcept
 ID3DX11Effect* Effect::operator->()
 {
 	return m_pEffect;
+}
+
+void Effect::CycleFilteringMode()
+{
+	m_Sampler.Cycle();
 }
 
 void Effect::SetWorldViewProjection( const Matrix& wvp )

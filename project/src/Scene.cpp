@@ -1,5 +1,5 @@
+#include <SDL_keyboard.h>
 #include "Scene.h"
-#include "Mesh.h"
 #include "Error.h"
 #include "Utils.h"
 
@@ -7,12 +7,30 @@ namespace dae
 {
 void Scene::Update( Timer* pTimer )
 {
+	// Update Camera
 	m_Camera.Update( pTimer );
 
 	for ( auto& mesh : m_Meshes )
 	{
 		mesh.SetWorldViewProjection( m_Camera.GetViewMatrix() * m_Camera.GetProjectionMatrix() );
 	}
+	//
+
+	// Handle input
+	const Uint8* pKeyboardState{ SDL_GetKeyboardState( nullptr ) };
+	if ( pKeyboardState[SDL_SCANCODE_F2] && !m_F2Held )
+	{
+		m_F2Held = true;
+		for ( auto& mesh : m_Meshes )
+		{
+			mesh.CycleFilteringMode();
+		}
+	}
+	if ( !pKeyboardState[SDL_SCANCODE_F2] && m_F2Held )
+	{
+		m_F2Held = false;
+	}
+	//
 }
 
 void Scene::Draw( ID3D11DeviceContext* pDeviceContext )

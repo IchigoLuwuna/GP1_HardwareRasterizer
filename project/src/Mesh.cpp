@@ -1,5 +1,4 @@
 #include "Mesh.h"
-#include "Effect.h"
 #include "Error.h"
 
 namespace dae
@@ -147,6 +146,11 @@ void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
 		m_Effect.GetTechniquePtr()->GetPassByIndex( passIdx )->Apply( 0, pDeviceContext );
 		pDeviceContext->DrawIndexed( m_IndexCount, 0, 0 );
 	}
+}
+
+void Mesh::CycleFilteringMode()
+{
+	m_Effect.CycleFilteringMode();
 }
 
 ID3D11Buffer* Mesh::GetVertexBufferPtr() const

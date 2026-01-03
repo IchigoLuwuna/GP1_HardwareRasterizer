@@ -2,15 +2,9 @@
 #define EFFECT_H
 
 // This is an RAII wrapper around DirectX effects
-// DirectX Headers
-#include <string>
-#include <dxgi.h>
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <d3dx11effect.h>
-
 // Project includes
 #include "Matrix.h"
+#include "Sampler.h"
 #include "Texture.h"
 
 namespace dae
@@ -29,6 +23,9 @@ public:
 
 	ID3DX11Effect* operator->(); // Access effect
 
+	// Methods
+	void CycleFilteringMode();
+
 	// Setters
 	void SetWorldViewProjection( const Matrix& wvp );
 	void SetDiffuseMap( const Texture& diffuseTexture );
@@ -41,6 +38,7 @@ private:
 	// HARDWARE RESOURCES: OWNING
 	ID3DX11Effect* m_pEffect{};
 	ID3D11InputLayout* m_pInputLayout{};
+	Sampler m_Sampler{};
 	//
 
 	// HARDWARE RESOURCES: NON-OWNING

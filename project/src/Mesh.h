@@ -1,10 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
-#include <cstdint>
 #include <vector>
-#include <d3d11.h>
 #include "Effect.h"
-#include "Structs.h"
 
 namespace dae
 {
@@ -28,6 +25,7 @@ public:
 
 	// Methods
 	void Draw( ID3D11DeviceContext* pDeviceContext ) const;
+	void CycleFilteringMode();
 
 	// Setters
 	void SetWorldViewProjection( const Matrix& wvp );
