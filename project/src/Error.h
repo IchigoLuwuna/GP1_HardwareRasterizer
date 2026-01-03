@@ -107,6 +107,15 @@ public:
 		return "InvalidDiffuseMap";
 	}
 };
+
+class InvalidSamplerState : public EffectError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "InvalidSamplerState";
+	}
+};
 } // namespace effect
 
 namespace texture
