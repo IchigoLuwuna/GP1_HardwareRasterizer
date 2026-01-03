@@ -139,7 +139,7 @@ void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
 	pDeviceContext->IASetIndexBuffer( m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0 );
 
 	// 5. Draw
-	D3DX11_TECHNIQUE_DESC techDesc;
+	D3DX11_TECHNIQUE_DESC techDesc{};
 	m_Effect.GetTechniquePtr()->GetDesc( &techDesc );
 	for ( UINT passIdx{}; passIdx < techDesc.Passes; ++passIdx )
 	{
