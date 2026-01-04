@@ -46,10 +46,6 @@ void Scene::Draw( ID3D11DeviceContext* pDeviceContext )
 	}
 }
 
-void Scene::Initialize( ID3D11Device* pDevice, float aspectRatio )
-{
-}
-
 void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 {
 	m_Camera = Camera{ { 0.f, 0.f, -10.f }, 45.f, aspectRatio };
@@ -73,6 +69,15 @@ void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRati
 		effectPath,
 		texturePath,
 	} );
+}
+
+void VehicleScene::Update( Timer* pTimer )
+{
+	const Matrix rotation{ Matrix::CreateRotationY( pTimer->GetElapsed() * 0.5f * PI ) };
+
+	m_Meshes[0].ApplyMatrix( rotation );
+
+	Scene::Update( pTimer );
 }
 
 void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )

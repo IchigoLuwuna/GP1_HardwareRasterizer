@@ -13,7 +13,7 @@ public:
 	virtual void Update( Timer* pTimer );
 	virtual void Draw( ID3D11DeviceContext* pDeviceContext );
 
-	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio );
+	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) = 0;
 
 protected:
 	Camera m_Camera{};
@@ -32,6 +32,8 @@ public:
 class VehicleScene : public Scene
 {
 public:
+	virtual void Update( Timer* pTimer ) override;
+
 	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
 };
 } // namespace dae

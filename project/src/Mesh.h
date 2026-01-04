@@ -26,6 +26,7 @@ public:
 	// Methods
 	void Draw( ID3D11DeviceContext* pDeviceContext ) const;
 	void CycleFilteringMode();
+	void ApplyMatrix( const Matrix& action );
 
 	// Setters
 	void SetWorldViewProjection( const Matrix& wvp );

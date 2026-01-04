@@ -153,6 +153,11 @@ void Mesh::CycleFilteringMode()
 	m_Effect.CycleFilteringMode();
 }
 
+void Mesh::ApplyMatrix( const Matrix& action )
+{
+	m_WorldMatrix = action * m_WorldMatrix;
+}
+
 ID3D11Buffer* Mesh::GetVertexBufferPtr() const
 {
 	return m_pVertexBuffer;
