@@ -27,7 +27,7 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	}
 
 	// Create Vertex Layout
-	constexpr int elementCount{ 3 };
+	constexpr int elementCount{ 5 };
 	std::array<D3D11_INPUT_ELEMENT_DESC, elementCount> vertexDesc{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -44,6 +44,16 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	vertexDesc[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	vertexDesc[2].AlignedByteOffset = 24;
 	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[3].SemanticName = "NORMAL";
+	vertexDesc[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[3].AlignedByteOffset = 32;
+	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[4].SemanticName = "TANGENT";
+	vertexDesc[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[4].AlignedByteOffset = 44;
+	vertexDesc[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	//
 
 	// Create Input Layout
@@ -66,6 +76,12 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	if ( !m_pWorldViewProjection->IsValid() )
 	{
 		throw error::effect::InvalidWorldViewProjection();
+	}
+
+	m_pWorld = m_pEffect->GetVariableByName( "gWorld" )->AsMatrix();
+	if ( !m_pWorld->IsValid() )
+	{
+		throw error::effect::InvalidWorld();
 	}
 
 	m_pDiffuseMap = m_pEffect->GetVariableByName( "gDiffuseMap" )->AsShaderResource();
@@ -100,6 +116,8 @@ Effect::Effect( Effect&& rhs )
 	rhs.m_pTechnique = nullptr;
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+	m_pWorld = rhs.m_pWorld;
+	rhs.m_pWorld = nullptr;
 	m_pDiffuseMap = rhs.m_pDiffuseMap;
 	rhs.m_pDiffuseMap = nullptr;
 	//
@@ -125,6 +143,8 @@ Effect& Effect::operator=( Effect&& rhs )
 	rhs.m_pTechnique = nullptr;
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+	m_pWorld = rhs.m_pWorld;
+	rhs.m_pWorld = nullptr;
 	m_pDiffuseMap = rhs.m_pDiffuseMap;
 	rhs.m_pDiffuseMap = nullptr;
 	//
@@ -158,6 +178,11 @@ void Effect::CycleFilteringMode()
 void Effect::SetWorldViewProjection( const Matrix& wvp )
 {
 	m_pWorldViewProjection->SetMatrix( reinterpret_cast<const float*>( &wvp ) );
+}
+
+void Effect::SetWorld( const Matrix& w )
+{
+	m_pWorld->SetMatrix( reinterpret_cast<const float*>( &w ) );
 }
 
 void Effect::SetDiffuseMap( const Texture& diffuseTexture )

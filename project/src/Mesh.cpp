@@ -117,9 +117,9 @@ Mesh::~Mesh() noexcept
 	}
 }
 
-void Mesh::SetWorldViewProjection( const Matrix& wvp )
+void Mesh::Update()
 {
-	m_Effect.SetWorldViewProjection( m_WorldMatrix * wvp );
+	m_Effect.SetWorld( m_WorldMatrix );
 }
 
 void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
@@ -156,6 +156,17 @@ void Mesh::CycleFilteringMode()
 void Mesh::ApplyMatrix( const Matrix& action )
 {
 	m_WorldMatrix = action * m_WorldMatrix;
+}
+
+void Mesh::SetWorldViewProjection( const Matrix& wvp )
+{
+	m_Effect.SetWorldViewProjection( m_WorldMatrix * wvp );
+}
+
+void Mesh::SetWorld( const Matrix& w )
+{
+	m_WorldMatrix = w;
+	m_Effect.SetWorld( m_WorldMatrix );
 }
 
 ID3D11Buffer* Mesh::GetVertexBufferPtr() const

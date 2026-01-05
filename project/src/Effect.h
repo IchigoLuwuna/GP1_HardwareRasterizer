@@ -28,6 +28,7 @@ public:
 
 	// Setters
 	void SetWorldViewProjection( const Matrix& wvp );
+	void SetWorld( const Matrix& w );
 	void SetDiffuseMap( const Texture& diffuseTexture );
 
 	// Getters
@@ -44,6 +45,7 @@ private:
 	// HARDWARE RESOURCES: NON-OWNING
 	ID3DX11EffectTechnique* m_pTechnique{};
 	ID3DX11EffectMatrixVariable* m_pWorldViewProjection{};
+	ID3DX11EffectMatrixVariable* m_pWorld{};
 	ID3DX11EffectShaderResourceVariable* m_pDiffuseMap{};
 	//
 

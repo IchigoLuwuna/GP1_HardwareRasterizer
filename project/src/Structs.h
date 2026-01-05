@@ -126,6 +126,8 @@ struct Vertex final
 	Vector3 position{};
 	ColorRGB color{};
 	Vector2 UV{};
+	Vector3 normal{};
+	Vector3 tangent{};
 };
 
 // Global Operators

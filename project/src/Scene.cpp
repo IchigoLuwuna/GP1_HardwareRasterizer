@@ -13,6 +13,7 @@ void Scene::Update( Timer* pTimer )
 	for ( auto& mesh : m_Meshes )
 	{
 		mesh.SetWorldViewProjection( m_Camera.GetViewMatrix() * m_Camera.GetProjectionMatrix() );
+		mesh.Update();
 	}
 	//
 
