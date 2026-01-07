@@ -57,13 +57,6 @@ float3 CalculateLambert(float2 uv)
 // ---------
 // | Extra |
 // ---------
-float3 MaxToOne(float3 input)
-{
-	float largestValue = max(max(1.f, input.r), max(input.g, input.b));
-
-	return input / largestValue;
-}
-
 float3 GetToCamera(float3 origin)
 {
 	return (gCameraOrigin.xyz - origin);
@@ -101,7 +94,7 @@ float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 
 	// Calculate color
 	float3 finalColor = lambertDiffuse * CalculateOA(input.Normal);
-	finalColor = MaxToOne(finalColor);
+	finalColor = saturate(finalColor);
 
 	return float4(finalColor, 1.f);
 }
