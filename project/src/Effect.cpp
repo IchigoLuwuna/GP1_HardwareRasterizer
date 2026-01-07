@@ -84,6 +84,12 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 		throw error::effect::InvalidWorld();
 	}
 
+	m_pCameraOrigin = m_pEffect->GetVariableByName( "gCameraOrigin" )->AsVector();
+	if ( !m_pCameraOrigin->IsValid() )
+	{
+		throw error::effect::InvalidCameraOrigin();
+	}
+
 	m_pDiffuseMap = m_pEffect->GetVariableByName( "gDiffuseMap" )->AsShaderResource();
 	if ( !m_pDiffuseMap->IsValid() )
 	{
@@ -106,18 +112,26 @@ Effect::Effect( Effect&& rhs )
 	// OWNING
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
+
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+
 	m_Sampler = std::move( rhs.m_Sampler );
 	//
 
 	// NON-OWNING
 	m_pTechnique = rhs.m_pTechnique;
 	rhs.m_pTechnique = nullptr;
+
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+
 	m_pWorld = rhs.m_pWorld;
 	rhs.m_pWorld = nullptr;
+
+	m_pCameraOrigin = rhs.m_pCameraOrigin;
+	rhs.m_pCameraOrigin = nullptr;
+
 	m_pDiffuseMap = rhs.m_pDiffuseMap;
 	rhs.m_pDiffuseMap = nullptr;
 	//
@@ -133,18 +147,26 @@ Effect& Effect::operator=( Effect&& rhs )
 	// OWNING
 	m_pEffect = rhs.m_pEffect;
 	rhs.m_pEffect = nullptr;
+
 	m_pInputLayout = rhs.m_pInputLayout;
 	rhs.m_pInputLayout = nullptr;
+
 	m_Sampler = std::move( rhs.m_Sampler );
 	//
 
 	// NON-OWNING
 	m_pTechnique = rhs.m_pTechnique;
 	rhs.m_pTechnique = nullptr;
+
 	m_pWorldViewProjection = rhs.m_pWorldViewProjection;
 	rhs.m_pWorldViewProjection = nullptr;
+
 	m_pWorld = rhs.m_pWorld;
 	rhs.m_pWorld = nullptr;
+
+	m_pCameraOrigin = rhs.m_pCameraOrigin;
+	rhs.m_pCameraOrigin = nullptr;
+
 	m_pDiffuseMap = rhs.m_pDiffuseMap;
 	rhs.m_pDiffuseMap = nullptr;
 	//
@@ -183,6 +205,12 @@ void Effect::SetWorldViewProjection( const Matrix& wvp )
 void Effect::SetWorld( const Matrix& w )
 {
 	m_pWorld->SetMatrix( reinterpret_cast<const float*>( &w ) );
+}
+
+void Effect::SetCameraOrigin( const Vector3& o )
+{
+	const Vector4 input{ o, 1.f };
+	m_pCameraOrigin->SetFloatVector( reinterpret_cast<const float*>( &input ) );
 }
 
 void Effect::SetDiffuseMap( const Texture& diffuseTexture )

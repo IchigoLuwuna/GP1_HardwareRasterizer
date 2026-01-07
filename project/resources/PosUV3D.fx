@@ -2,12 +2,19 @@
 // | Constants |
 // -------------
 static const float pi = 3.14159265f;
+static const float lightIntensity = 7.f;
+static const float shininess = 25.f;
+static const float3 lightDirection = {0.577f, -0.577f, 0.577f};
 
-// -----------
-// | Globals |
-// -----------
+// -----------------
+// | Scene Globals |
+// -----------------
+// Camera & Worldspace
 float4x4 gWorldViewProj : WorldViewProjection;
 float4x4 gWorld : World;
+float4 gCameraOrigin;
+
+// Textures
 Texture2D gDiffuseMap : DiffuseMap;
 SamplerState gSampler : Sampler;
 
@@ -33,6 +40,39 @@ struct VS_OUTPUT
 	float3 Tangent : TANGENT;
 };
 
+// ------------
+// | Lighting |
+// ------------
+float CalculateOA(float3 normal)
+{
+	return dot(normal, -lightDirection);
+}
+
+float3 CalculateLambert(float2 uv)
+{
+	float3 sampledColor = gDiffuseMap.Sample(gSampler, uv).xyz;
+	return sampledColor * lightIntensity / pi;
+}
+
+// ---------
+// | Extra |
+// ---------
+float3 MaxToOne(float3 input)
+{
+	float largestValue = max(max(1.f, input.r), max(input.g, input.b));
+
+	return input / largestValue;
+}
+
+float3 GetToCamera(float3 origin)
+{
+	return (gCameraOrigin.xyz - origin);
+}
+
+float3 GetSampledNormal()
+{
+	// TODO
+}
 
 // -----------
 // | Shaders |
@@ -45,16 +85,25 @@ VS_OUTPUT VtxShader(VS_INPUT input)
 	output.WorldPosition = mul( float4( input.Position, 1.f ), gWorld );
 	output.Color = input.Color;
 	output.UV = input.UV;
-	output.Normal = normalize( mul( float4( input.Normal, 0.f ), gWorld ).xyz );
-	output.Tangent = normalize( mul( float4( input.Tangent, 0.f ), gWorld ).xyz );
+	output.Normal = normalize( mul( input.Normal, (float3x3)gWorld ).xyz );
+	output.Tangent = normalize( mul( input.Tangent, (float3x3)gWorld ).xyz );
 	return output;
 }
 
 // Pixel Shader
 float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
-	float4 sampledColor = gDiffuseMap.Sample(gSampler, input.UV);
-	return sampledColor;
+	// Calculate view direction
+	float3 originToCamera = GetToCamera(input.WorldPosition.xyz);
+
+	// Calculate diffuse
+	float3 lambertDiffuse = CalculateLambert(input.UV);
+
+	// Calculate color
+	float3 finalColor = lambertDiffuse * CalculateOA(input.Normal);
+	finalColor = MaxToOne(finalColor);
+
+	return float4(finalColor, 1.f);
 }
 
 // --------------

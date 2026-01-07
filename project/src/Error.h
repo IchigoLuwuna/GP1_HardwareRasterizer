@@ -113,6 +113,15 @@ public:
 	}
 };
 
+class InvalidCameraOrigin : public EffectError
+{
+public:
+	virtual std::string what() const override
+	{
+		return "InvalidCameraOrigin";
+	}
+};
+
 class InvalidDiffuseMap : public EffectError
 {
 public:

@@ -117,11 +117,6 @@ Mesh::~Mesh() noexcept
 	}
 }
 
-void Mesh::Update()
-{
-	m_Effect.SetWorld( m_WorldMatrix );
-}
-
 void Mesh::Draw( ID3D11DeviceContext* pDeviceContext ) const
 {
 	// 1. Set primitive topology
@@ -158,9 +153,11 @@ void Mesh::ApplyMatrix( const Matrix& action )
 	m_WorldMatrix = action * m_WorldMatrix;
 }
 
-void Mesh::SetWorldViewProjection( const Matrix& wvp )
+void Mesh::SetWorldViewProjection( const Vector3& o, const Matrix& v, const Matrix& p )
 {
-	m_Effect.SetWorldViewProjection( m_WorldMatrix * wvp );
+	m_Effect.SetWorldViewProjection( m_WorldMatrix * ( v * p ) );
+	m_Effect.SetWorld( m_WorldMatrix );
+	m_Effect.SetCameraOrigin( o );
 }
 
 void Mesh::SetWorld( const Matrix& w )

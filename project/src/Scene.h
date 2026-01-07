@@ -17,8 +17,9 @@ public:
 
 protected:
 	Camera m_Camera{};
-
 	std::vector<Mesh> m_Meshes{};
+	Vector3 m_LightDir{};
+
 	// TODO:Make this a bitmask
 	bool m_F2Held{};
 };

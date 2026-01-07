@@ -24,13 +24,12 @@ public:
 	~Mesh() noexcept;
 
 	// Methods
-	void Update();
 	void Draw( ID3D11DeviceContext* pDeviceContext ) const;
 	void CycleFilteringMode();
 	void ApplyMatrix( const Matrix& action );
 
 	// Setters
-	void SetWorldViewProjection( const Matrix& wvp );
+	void SetWorldViewProjection( const Vector3& o, const Matrix& v, const Matrix& p );
 	void SetWorld( const Matrix& w );
 
 	// Getters

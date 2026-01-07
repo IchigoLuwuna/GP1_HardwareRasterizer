@@ -12,8 +12,7 @@ void Scene::Update( Timer* pTimer )
 
 	for ( auto& mesh : m_Meshes )
 	{
-		mesh.SetWorldViewProjection( m_Camera.GetViewMatrix() * m_Camera.GetProjectionMatrix() );
-		mesh.Update();
+		mesh.SetWorldViewProjection( m_Camera.GetPosition(), m_Camera.GetViewMatrix(), m_Camera.GetProjectionMatrix() );
 	}
 	//
 
@@ -74,9 +73,9 @@ void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRati
 
 void VehicleScene::Update( Timer* pTimer )
 {
-	const Matrix rotation{ Matrix::CreateRotationY( pTimer->GetElapsed() * 0.5f * PI ) };
+	// const Matrix rotation{ Matrix::CreateRotationY( pTimer->GetElapsed() * 0.5f * PI ) };
 
-	m_Meshes[0].ApplyMatrix( rotation );
+	// m_Meshes[0].ApplyMatrix( rotation );
 
 	Scene::Update( pTimer );
 }
@@ -84,6 +83,13 @@ void VehicleScene::Update( Timer* pTimer )
 void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 {
 	m_Camera = Camera{ { 0.f, 0.f, -64.f }, 45.f, aspectRatio };
+
+	// Uncomment if on C++26 -> std::sqrt is made constexpr
+	// constexpr float xyzNormalized{1.f / std::sqrt(3.f)};
+	// m_LightDir = { xyzNormalized, -xyzNormalized, xyzNormalized };
+
+	// Comment if on C++26 -> non-magic number solution above
+	m_LightDir = { 0.577f, -0.577f, 0.577f };
 
 	std::vector<Vertex> vertices{};
 	std::vector<uint32_t> indices{};
