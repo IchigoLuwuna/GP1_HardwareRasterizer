@@ -98,6 +98,9 @@ void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST };
 	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
 	const std::string texturePath{ "./resources/vehicle_diffuse.png" };
+	const std::string normalMapPath{ "./resources/vehicle_normal.png" };
+	const std::string specularMap{ "./resources/vehicle_specular.png" };
+	const std::string glossMap{ "./resources/vehicle_gloss.png" };
 
 	m_Meshes.push_back( Mesh{
 		pDevice,

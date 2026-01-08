@@ -12,10 +12,13 @@ static const float3 lightDirection = {0.577f, -0.577f, 0.577f};
 // Camera & Worldspace
 float4x4 gWorldViewProj : WorldViewProjection;
 float4x4 gWorld : World;
-float4 gCameraOrigin;
+float4 gCameraOrigin : CameraOrigin;
 
 // Textures
 Texture2D gDiffuseMap : DiffuseMap;
+Texture2D gNormalMap : NormalMap;
+Texture2D gSpecularMap : SpecularMap;
+Texture2D gGlossMap : GlossMap;
 SamplerState gSampler : Sampler;
 
 // -----------
@@ -40,6 +43,24 @@ struct VS_OUTPUT
 	float3 Tangent : TANGENT;
 };
 
+// ---------
+// | Extra |
+// ---------
+float3 GetToCamera(float3 origin)
+{
+	return normalize(gCameraOrigin.xyz - origin);
+}
+
+float3 GetSampledNormal()
+{
+	// TODO
+}
+
+float3 MultColor(float3 a, float3 b)
+{
+	return float3(a.r * b.r, a.g * b.g, a.b * b.b);
+}
+
 // ------------
 // | Lighting |
 // ------------
@@ -48,23 +69,16 @@ float CalculateOA(float3 normal)
 	return dot(normal, -lightDirection);
 }
 
-float3 CalculateLambert(float2 uv)
+float3 CalculateLambert(float3 diffuseColor, float diffuseReflectance)
 {
-	float3 sampledColor = gDiffuseMap.Sample(gSampler, uv).xyz;
-	return sampledColor * lightIntensity / pi;
+	return diffuseColor * diffuseReflectance / pi;
 }
 
-// ---------
-// | Extra |
-// ---------
-float3 GetToCamera(float3 origin)
+float3 CalculatePhong(float3 specularReflect, float phongExponent, float3 lightInDir, float3 camToDir, float3 normal)
 {
-	return (gCameraOrigin.xyz - origin);
-}
-
-float3 GetSampledNormal()
-{
-	// TODO
+	float3 reflectLight = reflect(lightInDir, normal);
+	float closingFactor = max(dot(reflectLight, camToDir), 0.f);
+	return specularReflect * pow(closingFactor, phongExponent);
 }
 
 // -----------
@@ -90,10 +104,18 @@ float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 	float3 originToCamera = GetToCamera(input.WorldPosition.xyz);
 
 	// Calculate diffuse
-	float3 lambertDiffuse = CalculateLambert(input.UV);
+	float3 sampledColor = gDiffuseMap.Sample(gSampler, input.UV).xyz;
+	float3 lambertDiffuse = CalculateLambert(sampledColor, lightIntensity);
 
-	// Calculate color
-	float3 finalColor = lambertDiffuse * CalculateOA(input.Normal);
+	// Calculate phong
+	float3 sampledSpecular = float3(0.5f, 0.5f, 0.5f);
+	float sampledGloss = 0.5f;
+	float phongExponent = sampledGloss * shininess;
+	float3 phongSpecular = CalculatePhong(sampledSpecular, phongExponent, lightDirection, originToCamera, input.Normal);
+
+	// Calculate final color
+	float3 brdf = lambertDiffuse + phongSpecular;
+	float3 finalColor = brdf * CalculateOA(input.Normal);
 	finalColor = saturate(finalColor);
 
 	return float4(finalColor, 1.f);
