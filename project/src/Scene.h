@@ -24,12 +24,6 @@ protected:
 	bool m_F2Held{};
 };
 
-class CameraAndTexturesScene : public Scene
-{
-public:
-	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
-};
-
 class VehicleScene : public Scene
 {
 public:

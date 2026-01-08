@@ -30,7 +30,10 @@ public:
 	void SetWorldViewProjection( const Matrix& wvp );
 	void SetWorld( const Matrix& w );
 	void SetCameraOrigin( const Vector3& o );
-	void SetDiffuseMap( const Texture& diffuseTexture );
+	void SetDiffuseMap( const Texture& diffuseMap );
+	void SetNormalMap( const Texture& normalMap );
+	void SetSpecularMap( const Texture& specularMap );
+	void SetGlossMap( const Texture& glossMap );
 
 	// Getters
 	ID3DX11EffectTechnique* GetTechniquePtr() const;
@@ -49,6 +52,9 @@ private:
 	ID3DX11EffectMatrixVariable* m_pWorld{};
 	ID3DX11EffectVectorVariable* m_pCameraOrigin{};
 	ID3DX11EffectShaderResourceVariable* m_pDiffuseMap{};
+	ID3DX11EffectShaderResourceVariable* m_pNormalMap{};
+	ID3DX11EffectShaderResourceVariable* m_pSpecularMap{};
+	ID3DX11EffectShaderResourceVariable* m_pGlossMap{};
 	//
 
 	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );

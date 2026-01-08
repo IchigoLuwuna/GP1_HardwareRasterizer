@@ -122,7 +122,7 @@ public:
 	}
 };
 
-class InvalidDiffuseMap : public EffectError
+class InvalidMap : public EffectError
 {
 public:
 	virtual std::string what() const override

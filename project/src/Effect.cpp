@@ -93,7 +93,25 @@ Effect::Effect( ID3D11Device* pDevice, const std::wstring& assetFile )
 	m_pDiffuseMap = m_pEffect->GetVariableByName( "gDiffuseMap" )->AsShaderResource();
 	if ( !m_pDiffuseMap->IsValid() )
 	{
-		throw error::effect::InvalidDiffuseMap();
+		throw error::effect::InvalidMap();
+	}
+
+	m_pNormalMap = m_pEffect->GetVariableByName( "gNormalMap" )->AsShaderResource();
+	if ( !m_pNormalMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
+	}
+
+	m_pSpecularMap = m_pEffect->GetVariableByName( "gSpecularMap" )->AsShaderResource();
+	if ( !m_pSpecularMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
+	}
+
+	m_pGlossMap = m_pEffect->GetVariableByName( "gGlossMap" )->AsShaderResource();
+	if ( !m_pGlossMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
 	}
 	//
 
@@ -134,6 +152,30 @@ Effect::Effect( Effect&& rhs )
 
 	m_pDiffuseMap = rhs.m_pDiffuseMap;
 	rhs.m_pDiffuseMap = nullptr;
+
+	m_pNormalMap = rhs.m_pNormalMap;
+	rhs.m_pNormalMap = nullptr;
+
+	m_pSpecularMap = rhs.m_pSpecularMap;
+	rhs.m_pSpecularMap = nullptr;
+
+	m_pNormalMap = m_pEffect->GetVariableByName( "gNormalMap" )->AsShaderResource();
+	if ( !m_pNormalMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
+	}
+
+	m_pSpecularMap = m_pEffect->GetVariableByName( "gSpecularMap" )->AsShaderResource();
+	if ( !m_pSpecularMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
+	}
+
+	m_pGlossMap = m_pEffect->GetVariableByName( "gGlossMap" )->AsShaderResource();
+	if ( !m_pGlossMap->IsValid() )
+	{
+		throw error::effect::InvalidMap();
+	}
 	//
 }
 
@@ -213,9 +255,24 @@ void Effect::SetCameraOrigin( const Vector3& o )
 	m_pCameraOrigin->SetFloatVector( reinterpret_cast<const float*>( &input ) );
 }
 
-void Effect::SetDiffuseMap( const Texture& diffuseTexture )
+void Effect::SetDiffuseMap( const Texture& diffuseMap )
 {
-	m_pDiffuseMap->SetResource( diffuseTexture.GetSRV() );
+	m_pDiffuseMap->SetResource( diffuseMap.GetSRV() );
+}
+
+void Effect::SetNormalMap( const Texture& normalMap )
+{
+	m_pNormalMap->SetResource( normalMap.GetSRV() );
+}
+
+void Effect::SetSpecularMap( const Texture& specularMap )
+{
+	m_pSpecularMap->SetResource( specularMap.GetSRV() );
+}
+
+void Effect::SetGlossMap( const Texture& glossMap )
+{
+	m_pGlossMap->SetResource( glossMap.GetSRV() );
 }
 
 ID3DX11EffectTechnique* Effect::GetTechniquePtr() const

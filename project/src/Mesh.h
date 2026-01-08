@@ -14,7 +14,10 @@ public:
 		  const std::vector<UINT>& indices,
 		  D3D11_PRIMITIVE_TOPOLOGY topology,
 		  const std::wstring& effectPath,
-		  const std::string& texturePath );
+		  const std::string& diffuseMapPath,
+		  const std::string& normalMapPath,
+		  const std::string& specularMapPath,
+		  const std::string& glossMapPath );
 	Mesh( const Mesh& ) = delete;
 	Mesh( Mesh&& rhs );
 
@@ -50,7 +53,10 @@ private:
 	ID3D11Buffer* m_pVertexBuffer{};
 	ID3D11Buffer* m_pIndexBuffer{};
 	Effect m_Effect{};
-	Texture m_Texture{};
+	Texture m_DiffuseMap{};
+	Texture m_NormalMap{};
+	Texture m_SpecularMap{};
+	Texture m_GlossMap{};
 	//
 };
 }; // namespace dae

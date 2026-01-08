@@ -46,31 +46,6 @@ void Scene::Draw( ID3D11DeviceContext* pDeviceContext )
 	}
 }
 
-void CameraAndTexturesScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
-{
-	m_Camera = Camera{ { 0.f, 0.f, -10.f }, 45.f, aspectRatio };
-
-	const std::vector<Vertex> vertices{
-		{ { 3.f, 3.f, 2.f }, { 1.f, 0.f, 0.f }, { 1.f, 0.f } },
-		{ { 3.f, -3.f, 2.f }, { 0.f, 0.f, 1.f }, { 1.f, 1.f } },
-		{ { -3.f, -3.f, 2.f }, { 0.f, 1.f, 0.f }, { 0.f, 1.f } },
-		{ { -3.f, 3.f, 2.f }, { 1.f, 0.f, 1.f }, { 0.f, 0.f } },
-	};
-	const std::vector<uint32_t> indices{ 0, 1, 3, 2 };
-	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP };
-	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
-	const std::string texturePath{ "./resources/uv_grid_2.png" };
-
-	m_Meshes.push_back( Mesh{
-		pDevice,
-		vertices,
-		indices,
-		topology,
-		effectPath,
-		texturePath,
-	} );
-}
-
 void VehicleScene::Update( Timer* pTimer )
 {
 	// const Matrix rotation{ Matrix::CreateRotationY( pTimer->GetElapsed() * 0.5f * PI ) };
@@ -97,10 +72,10 @@ void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 	Utils::ParseOBJ( "./resources/vehicle.obj", vertices, indices );
 	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST };
 	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
-	const std::string texturePath{ "./resources/vehicle_diffuse.png" };
+	const std::string diffuseMapPath{ "./resources/vehicle_diffuse.png" };
 	const std::string normalMapPath{ "./resources/vehicle_normal.png" };
-	const std::string specularMap{ "./resources/vehicle_specular.png" };
-	const std::string glossMap{ "./resources/vehicle_gloss.png" };
+	const std::string specularMapPath{ "./resources/vehicle_specular.png" };
+	const std::string glossMapPath{ "./resources/vehicle_gloss.png" };
 
 	m_Meshes.push_back( Mesh{
 		pDevice,
@@ -108,7 +83,10 @@ void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 		indices,
 		topology,
 		effectPath,
-		texturePath,
+		diffuseMapPath,
+		normalMapPath,
+		specularMapPath,
+		glossMapPath,
 	} );
 }
 } // namespace dae

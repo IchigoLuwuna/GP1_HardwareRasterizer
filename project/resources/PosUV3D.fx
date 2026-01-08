@@ -104,12 +104,12 @@ float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 	float3 originToCamera = GetToCamera(input.WorldPosition.xyz);
 
 	// Calculate diffuse
-	float3 sampledColor = gDiffuseMap.Sample(gSampler, input.UV).xyz;
+	float3 sampledColor = gDiffuseMap.Sample(gSampler, input.UV).rgb;
 	float3 lambertDiffuse = CalculateLambert(sampledColor, lightIntensity);
 
 	// Calculate phong
-	float3 sampledSpecular = float3(0.5f, 0.5f, 0.5f);
-	float sampledGloss = 0.5f;
+	float3 sampledSpecular = gSpecularMap.Sample(gSampler, input.UV).rgb;
+	float sampledGloss = gGlossMap.Sample(gSampler, input.UV).r;
 	float phongExponent = sampledGloss * shininess;
 	float3 phongSpecular = CalculatePhong(sampledSpecular, phongExponent, lightDirection, originToCamera, input.Normal);
 

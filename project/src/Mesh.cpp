@@ -8,10 +8,16 @@ Mesh::Mesh( ID3D11Device* pDevice,
 			const std::vector<UINT>& indices,
 			D3D11_PRIMITIVE_TOPOLOGY topology,
 			const std::wstring& effectPath,
-			const std::string& texturePath )
+			const std::string& diffuseMapPath,
+			const std::string& normalMapPath,
+			const std::string& specularMapPath,
+			const std::string& glossMapPath )
 	: m_Topology( topology )
 	, m_Effect( pDevice, effectPath )
-	, m_Texture( pDevice, texturePath )
+	, m_DiffuseMap( pDevice, diffuseMapPath )
+	, m_NormalMap( pDevice, normalMapPath )
+	, m_SpecularMap( pDevice, specularMapPath )
+	, m_GlossMap( pDevice, glossMapPath )
 {
 	if ( vertices.size() == 0 )
 	{
@@ -58,7 +64,10 @@ Mesh::Mesh( ID3D11Device* pDevice,
 	//
 
 	// Pass texture view to effect
-	m_Effect.SetDiffuseMap( m_Texture );
+	m_Effect.SetDiffuseMap( m_DiffuseMap );
+	m_Effect.SetNormalMap( m_NormalMap );
+	m_Effect.SetSpecularMap( m_SpecularMap );
+	m_Effect.SetGlossMap( m_GlossMap );
 	//
 }
 
@@ -80,6 +89,10 @@ Mesh::Mesh( Mesh&& rhs )
 	rhs.m_pIndexBuffer = nullptr;
 
 	m_Effect = std::move( rhs.m_Effect );
+	m_DiffuseMap = std::move( rhs.m_DiffuseMap );
+	m_NormalMap = std::move( rhs.m_NormalMap );
+	m_SpecularMap = std::move( rhs.m_SpecularMap );
+	m_GlossMap = std::move( rhs.m_GlossMap );
 }
 
 Mesh& Mesh::operator=( Mesh&& rhs )
