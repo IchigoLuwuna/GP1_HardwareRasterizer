@@ -9,7 +9,8 @@
 
 namespace dae
 {
-class Effect
+
+class Effect final
 {
 public:
 	Effect() = default;
@@ -39,6 +40,8 @@ public:
 	ID3DX11EffectTechnique* GetTechniquePtr() const;
 	ID3D11InputLayout* GetInputLayoutPtr() const;
 
+	static ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
+
 private:
 	// HARDWARE RESOURCES: OWNING
 	ID3DX11Effect* m_pEffect{};
@@ -56,9 +59,45 @@ private:
 	ID3DX11EffectShaderResourceVariable* m_pSpecularMap{};
 	ID3DX11EffectShaderResourceVariable* m_pGlossMap{};
 	//
+};
 
-	ID3DX11Effect* LoadEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
+class TransparentEffect final // see transparent mesh
+{
+public:
+	TransparentEffect() = default;
+	TransparentEffect( ID3D11Device* pDevice, const std::wstring& assetFile );
+	TransparentEffect( const Effect& ) = delete;
+	TransparentEffect( TransparentEffect&& rhs );
+	TransparentEffect& operator=( const TransparentEffect& ) = delete;
+	TransparentEffect& operator=( TransparentEffect&& rhs );
+
+	~TransparentEffect() noexcept;
+
+	ID3DX11Effect* operator->(); // Access effect
+
+	// Methods
+	void CycleFilteringMode();
+
+	// Setters
+	void SetWorldViewProjection( const Matrix& wvp );
+	void SetDiffuseMap( const Texture& diffuseMap );
+
+	// Getters
+	ID3DX11EffectTechnique* GetTechniquePtr() const;
+	ID3D11InputLayout* GetInputLayoutPtr() const;
+
+private:
+	// HARDWARE RESOURCES: OWNING
+	ID3DX11Effect* m_pEffect{};
+	ID3D11InputLayout* m_pInputLayout{};
+	Sampler m_Sampler{};
+	//
+
+	// HARDWARE RESOURCES: NON-OWNING
+	ID3DX11EffectTechnique* m_pTechnique{};
+	ID3DX11EffectMatrixVariable* m_pWorldViewProjection{};
+	ID3DX11EffectShaderResourceVariable* m_pDiffuseMap{};
+	//
 };
 } // namespace dae
-
 #endif

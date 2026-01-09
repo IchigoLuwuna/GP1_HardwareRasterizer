@@ -18,10 +18,16 @@ public:
 protected:
 	Camera m_Camera{};
 	std::vector<Mesh> m_Meshes{};
+	std::vector<TransparentMesh> m_TransparentMeshes{};
 	Vector3 m_LightDir{};
 
 	// TODO:Make this a bitmask
 	bool m_F2Held{};
+};
+
+class TestScene : public Scene
+{
+	virtual void Initialize( ID3D11Device* pDevice, float aspectRatio ) override;
 };
 
 class VehicleScene : public Scene

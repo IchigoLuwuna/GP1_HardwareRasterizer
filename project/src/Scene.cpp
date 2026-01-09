@@ -1,4 +1,5 @@
 #include <SDL_keyboard.h>
+#include <d3dx11effect.h>
 #include "Scene.h"
 #include "Error.h"
 #include "Utils.h"
@@ -13,6 +14,11 @@ void Scene::Update( Timer* pTimer )
 	for ( auto& mesh : m_Meshes )
 	{
 		mesh.SetWorldViewProjection( m_Camera.GetPosition(), m_Camera.GetViewMatrix(), m_Camera.GetProjectionMatrix() );
+	}
+
+	for ( auto& transparentMesh : m_TransparentMeshes )
+	{
+		transparentMesh.SetWorldViewProjection( m_Camera.GetViewMatrix(), m_Camera.GetProjectionMatrix() );
 	}
 	//
 
@@ -35,14 +41,21 @@ void Scene::Update( Timer* pTimer )
 
 void Scene::Draw( ID3D11DeviceContext* pDeviceContext )
 {
-	if ( m_Meshes.empty() )
+	if ( m_Meshes.empty() && m_TransparentMeshes.empty() )
 	{
 		throw error::scene::SceneIsEmpty();
 	}
 
+	// Draw normal meshes
 	for ( auto& mesh : m_Meshes )
 	{
 		mesh.Draw( pDeviceContext );
+	}
+
+	// Draw transparent meshes
+	for ( auto& transparentMesh : m_TransparentMeshes )
+	{
+		transparentMesh.Draw( pDeviceContext );
 	}
 }
 
@@ -71,13 +84,13 @@ void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 
 	Utils::ParseOBJ( "./resources/vehicle.obj", vertices, indices );
 	const D3D11_PRIMITIVE_TOPOLOGY topology{ D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST };
-	const std::wstring effectPath{ L"./resources/PosUV3D.fx" };
+	const std::wstring effectPath{ L"./resources/Opaque.fx" };
 	const std::string diffuseMapPath{ "./resources/vehicle_diffuse.png" };
 	const std::string normalMapPath{ "./resources/vehicle_normal.png" };
 	const std::string specularMapPath{ "./resources/vehicle_specular.png" };
 	const std::string glossMapPath{ "./resources/vehicle_gloss.png" };
 
-	m_Meshes.push_back( Mesh{
+	m_Meshes.push_back( {
 		pDevice,
 		vertices,
 		indices,
@@ -87,6 +100,22 @@ void VehicleScene::Initialize( ID3D11Device* pDevice, float aspectRatio )
 		normalMapPath,
 		specularMapPath,
 		glossMapPath,
+	} );
+
+	vertices.clear();
+	indices.clear();
+
+	Utils::ParseOBJ( "./resources/fireFX.obj", vertices, indices );
+	const std::wstring partialCoverageEffectPath{ L"./resources/PartialCoverage.fx" };
+	const std::string fireDiffuseMapPath{ "./resources/fireFX_diffuse.png" };
+
+	m_TransparentMeshes.push_back( TransparentMesh{
+		pDevice,
+		vertices,
+		indices,
+		topology,
+		partialCoverageEffectPath,
+		fireDiffuseMapPath,
 	} );
 }
 } // namespace dae

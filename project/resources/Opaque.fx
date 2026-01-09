@@ -9,6 +9,24 @@ static const float3 lightDirection = {0.577f, -0.577f, 0.577f};
 // -----------------
 // | Scene Globals |
 // -----------------
+// Rasterizer
+RasterizerState gRasterizerState
+{
+	CullMode = back;
+	FrontCounterClockWise = false; // default
+};
+BlendState gBlendState
+{
+	BlendEnable[0] = false;
+};
+DepthStencilState gDepthStencilState
+{
+	DepthEnable = true; // enable read
+	DepthWriteMask = all; // enable write
+	DepthFunc = less;
+	StencilEnable = false;
+};
+
 // Camera & Worldspace
 float4x4 gWorldViewProj : WorldViewProjection;
 float4x4 gWorld : World;
@@ -129,6 +147,9 @@ technique11 DefaultTechnique
 {
 	pass P0
 	{
+		SetRasterizerState(gRasterizerState);
+		SetDepthStencilState(gDepthStencilState, 0);
+		SetBlendState(gBlendState, float4(0.f, 0.f, 0.f, 0.f), -1);
 		SetVertexShader( CompileShader( vs_5_0, VtxShader() ) );
 		SetGeometryShader( NULL );
 		SetPixelShader( CompileShader( ps_5_0, PxlShader() ) );
