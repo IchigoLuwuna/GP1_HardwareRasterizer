@@ -69,9 +69,15 @@ float3 GetToCamera(float3 origin)
 	return normalize(gCameraOrigin.xyz - origin);
 }
 
-float3 GetSampledNormal()
+float3 GetSampledNormal(float2 uv, float3 normal, float3 tangent)
 {
-	// TODO
+	float3 sampledNormal = gNormalMap.Sample(gSampler, uv).rgb;
+	sampledNormal = 2.f * sampledNormal - float3(1.f, 1.f, 1.f); // remap normal
+
+	const float3 binormal = cross(normal, tangent);
+	const float3x3 TBN = float3x3(tangent, binormal, normal);
+
+	return mul(sampledNormal, TBN);
 }
 
 float3 MultColor(float3 a, float3 b)
@@ -94,8 +100,8 @@ float3 CalculateLambert(float3 diffuseColor, float diffuseReflectance)
 
 float3 CalculatePhong(float3 specularReflect, float phongExponent, float3 lightInDir, float3 camToDir, float3 normal)
 {
-	float3 reflectLight = reflect(lightInDir, normal);
-	float closingFactor = max(dot(reflectLight, camToDir), 0.f);
+	const float3 reflectLight = reflect(lightInDir, normal);
+	const float closingFactor = max(dot(reflectLight, camToDir), 0.f);
 	return specularReflect * pow(closingFactor, phongExponent);
 }
 
@@ -119,21 +125,24 @@ VS_OUTPUT VtxShader(VS_INPUT input)
 float4 PxlShader(VS_OUTPUT input) : SV_TARGET
 {
 	// Calculate view direction
-	float3 originToCamera = GetToCamera(input.WorldPosition.xyz);
+	const float3 originToCamera = GetToCamera(input.WorldPosition.xyz);
+
+	// Get normal from normal map
+	float3 normal = GetSampledNormal(input.UV, input.Normal, input.Tangent);
 
 	// Calculate diffuse
-	float3 sampledColor = gDiffuseMap.Sample(gSampler, input.UV).rgb;
-	float3 lambertDiffuse = CalculateLambert(sampledColor, lightIntensity);
+	const float3 sampledColor = gDiffuseMap.Sample(gSampler, input.UV).rgb;
+	const float3 lambertDiffuse = CalculateLambert(sampledColor, lightIntensity);
 
 	// Calculate phong
-	float3 sampledSpecular = gSpecularMap.Sample(gSampler, input.UV).rgb;
-	float sampledGloss = gGlossMap.Sample(gSampler, input.UV).r;
-	float phongExponent = sampledGloss * shininess;
-	float3 phongSpecular = CalculatePhong(sampledSpecular, phongExponent, lightDirection, originToCamera, input.Normal);
+	const float3 sampledSpecular = gSpecularMap.Sample(gSampler, input.UV).rgb;
+	const float sampledGloss = gGlossMap.Sample(gSampler, input.UV).r;
+	const float phongExponent = sampledGloss * shininess;
+	const float3 phongSpecular = CalculatePhong(sampledSpecular, phongExponent, lightDirection, originToCamera, normal);
 
 	// Calculate final color
-	float3 brdf = lambertDiffuse + phongSpecular;
-	float3 finalColor = brdf * CalculateOA(input.Normal);
+	const float3 brdf = lambertDiffuse + phongSpecular;
+	float3 finalColor = brdf * CalculateOA(normal);
 	finalColor = saturate(finalColor);
 
 	return float4(finalColor, 1.f);

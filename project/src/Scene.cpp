@@ -64,6 +64,7 @@ void VehicleScene::Update( Timer* pTimer )
 	// const Matrix rotation{ Matrix::CreateRotationY( pTimer->GetElapsed() * 0.5f * PI ) };
 
 	// m_Meshes[0].ApplyMatrix( rotation );
+	// m_TransparentMeshes[0].ApplyMatrix( rotation );
 
 	Scene::Update( pTimer );
 }
